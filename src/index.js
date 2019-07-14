@@ -54,11 +54,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   schemaDirectives,
-  playground: IN_PROD ? {
-    settings: {
-      'request.credentials': 'same-origin'
-    }
-  } : {
+  playground: IN_PROD ? false : {
     settings: {
       'request.credentials': 'same-origin'
     }

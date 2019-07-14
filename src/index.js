@@ -54,11 +54,11 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   schemaDirectives,
-  playground: IN_PROD ? false : {
+  playground: { 
     settings: {
       'request.credentials': 'same-origin'
     }
-  },
+  }, // TODO: remember to block playground in prod
   uploads: {
     maxFieldSize: 2000000,
     maxFiles: 10

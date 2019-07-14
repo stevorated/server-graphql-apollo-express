@@ -6,7 +6,7 @@ import {
 } from './config'
 
 export const mongoString = process.env.NODE_ENV === 'production'
-  ? process.env.DB_URL
+  ? `mongodb+srv://${process.env.DB_USER}:${process.env.DB_HOST}/${process.env.DB_NAME}?retryWrites=true&w=majority`
   : `mongodb+srv://${DB_USER}:${DB_HOST}/${DB_NAME}?retryWrites=true&w=majority`
 
 export default async () => {

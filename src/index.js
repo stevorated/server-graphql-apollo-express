@@ -80,8 +80,8 @@ app.use(helmet())
 app.get('/', (req, res) => {
   res.status(200).send('Ya Alla')
 })
-app.listen({ port: APP_PORT || process.env.APP_PORT }, async () => {
+app.listen({ port: APP_PORT || process.env.PORT }, async () => {
   await db()
-  console.log(`🚀 Server ready at http://localhost:${APP_PORT || process.env.APP_PORT}`)
+  console.log(`🚀 Server ready at http://localhost:${APP_PORT || process.env.PORT}`)
 }
 )

@@ -16,7 +16,7 @@ import {
 } from './config'
 const { 
   NODE_ENV,
-  PORT,
+  APP_PORT,
   SESSION_DB_COLLECTION,
   SESSION_NAME,
   SESSION_SECRET,
@@ -28,7 +28,7 @@ const {
 } = process.env
 
 const IN_PROD = NODE_ENV === 'production'
-const port = PORT || APP_PORT
+const port = APP_PORT
 
 console.log(IN_PROD)
 
@@ -109,8 +109,8 @@ app.use(helmet())
 app.get('/', (req, res) => {
   res.status(200).send('Ya Alla!!!!!!')
 })
-app.listen({ port }, async () => {
+app.listen({ port: APP_PORT }, async () => {
   await db()
-  console.log(`🚀 Server ready at localhost:${port}`)
+  console.log(`🚀 Server ready at localhost:${APP_PORT}`)
 }
 )

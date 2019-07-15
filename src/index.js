@@ -11,9 +11,6 @@ import { protectedStatic } from './auth'
 import helmet from 'helmet'
 import schemaDirectives from './directives'
 import db, { mongoString } from './db'
-import {
-  APP_PORT
-} from './config'
 const { 
   NODE_ENV,
   APP_PORT,
@@ -28,7 +25,6 @@ const {
 } = process.env
 
 const IN_PROD = NODE_ENV === 'production'
-const port = APP_PORT
 
 console.log(IN_PROD)
 

@@ -20,6 +20,7 @@ import {
   ASSETS_DIR
 } from './config'
 const IN_PROD = process.env.NODE_ENV === 'production'
+const port = IN_PROD ? process.env.PORT : APP_PORT
 console.log(IN_PROD)
 const app = express()
 app.use(cookieParser('sid'))
@@ -81,8 +82,8 @@ app.use(helmet())
 app.get('/', (req, res) => {
   res.status(200).send('Ya Alla')
 })
-app.listen({ port: APP_PORT || process.env.PORT }, async () => {
+app.listen({ port }, async () => {
   await db()
-  console.log(`🚀 Server ready at http://localhost:${APP_PORT || process.env.PORT}`)
+  console.log(`🚀 Server ready at http://localhost:${port}`)
 }
 )

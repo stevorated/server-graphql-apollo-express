@@ -60,7 +60,6 @@ const assetsDir = path.join(__dirname, '..', ASSETS_DIR)
 app.use('/api/images', express.static(assetsDir))
 
 const server = new ApolloServer({
-  graphqlPath: '/api/graphql',
   typeDefs,
   resolvers,
   schemaDirectives,
@@ -90,12 +89,14 @@ const corsOptions = {
 
 server.applyMiddleware({
   app,
+  path: '/api/graphql',
   cors: corsOptions
 })
 app.use(helmet())
 app.get('/api', (req, res) => {
   res.status(200).send('Ya Alla!!!!!!')
 })
+server.graphqlPath = '/api/graphql'
 app.listen({ port: APP_PORT }, async () => {
   await db()
   console.log(`🚀 Server ready at localhost:${APP_PORT}`)

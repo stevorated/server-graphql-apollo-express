@@ -48,7 +48,7 @@ app.use(session({
   store,
   name: SESSION_NAME,
   secret: SESSION_SECRET,
-  resave: true,
+  // resave: true,
   httpOnly: IN_PROD,
   // rolling: true,
   saveUninitialized: false,

@@ -55,25 +55,12 @@ app.use(session({
   }
 }))
 
-// app.use(session({
-//   store,
-//   name: process.env.SESSION_NAME,
-//   secret: process.env.SESSION_SECRET,
-//   resave: true,
-//   httpOnly: IN_PROD,
-//   // rolling: true,
-//   saveUninitialized: false,
-//   cookie: {
-//     maxAge: parseInt(process.env.SESSION_LIFE),
-//     sameSite: false,
-//     secure: IN_PROD // TODO: bring back IN_PROD
-//   }
-// }))
-app.use('/images', protectedStatic)
+app.use('/api/images', protectedStatic)
 const assetsDir = path.join(__dirname, '..', ASSETS_DIR)
-app.use('/images', express.static(assetsDir))
+app.use('/api/images', express.static(assetsDir))
 
 const server = new ApolloServer({
+  graphqlPath: '/api/graphql',
   typeDefs,
   resolvers,
   schemaDirectives,

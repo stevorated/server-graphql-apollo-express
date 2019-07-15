@@ -27,15 +27,16 @@ app.disable('x-powered-by')
 const MongoSessionStore = mongoDBStore(session)
 const store = new MongoSessionStore({
   uri: mongoString,
-  collection: SESSION_DB_COLLECTION || process.env.SESSION_DB_COLLECTION
+  collection: process.env.SESSION_DB_COLLECTION
 })
 store.on('error', function (error) {
   console.log(error)
 })
+
 app.use(session({
   store,
-  name: SESSION_NAME || process.env.SESSION_NAME,
-  secret: SESSION_SECRET || process.env.SESSION_SECRET,
+  name: process.env.SESSION_NAME,
+  secret: process.env.SESSION_SECRET,
   resave: true,
   httpOnly: IN_PROD,
   // rolling: true,

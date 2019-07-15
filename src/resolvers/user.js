@@ -49,7 +49,7 @@ export default {
       await Joi.validate(args, signIn, { abortEarly: false })
       const user = await attmeptSignIn(email, password)
       req.session.userId = user.id
-      res.cookie('sid', user.id, { signed: true, httpOnly: true })
+      res.cookie('sid', user.id, { signed: true, httpOnly: true }) // TODO: Change to header.cookie
       return user
     },
     signOut: (root, args, { req, res }, info) => {

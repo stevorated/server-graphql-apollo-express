@@ -20,7 +20,7 @@ import {
   ASSETS_DIR
 } from './config'
 const IN_PROD = process.env.NODE_ENV === 'production'
-const port = IN_PROD ? process.env.PORT : APP_PORT
+const port = process.env.PORT || APP_PORT
 console.log(IN_PROD)
 const app = express()
 app.use(cookieParser('sid'))
@@ -33,7 +33,7 @@ const store = new MongoSessionStore({
 store.on('error', function (error) {
   console.log(error)
 })
-
+app.set('trust proxy', 1)
 app.use(session({
   store,
   name: process.env.SESSION_NAME,
@@ -43,11 +43,26 @@ app.use(session({
   // rolling: true,
   saveUninitialized: false,
   cookie: {
-    maxAge: parseInt(SESSION_LIFE),
-    sameSite: true,
-    secure: IN_PROD // TODO: bring back IN_PROD
+    maxAge: parseInt(process.env.SESSION_LIFE),
+    sameSite: false,
+    secure: false // TODO: bring back IN_PROD
   }
 }))
+
+// app.use(session({
+//   store,
+//   name: process.env.SESSION_NAME,
+//   secret: process.env.SESSION_SECRET,
+//   resave: true,
+//   httpOnly: IN_PROD,
+//   // rolling: true,
+//   saveUninitialized: false,
+//   cookie: {
+//     maxAge: parseInt(process.env.SESSION_LIFE),
+//     sameSite: false,
+//     secure: IN_PROD // TODO: bring back IN_PROD
+//   }
+// }))
 app.use('/images', protectedStatic)
 const assetsDir = path.join(__dirname, '..', ASSETS_DIR)
 app.use('/images', express.static(assetsDir))
@@ -69,7 +84,7 @@ const server = new ApolloServer({
 })
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: [],
   credentials: true,
   sameSite: false
 }

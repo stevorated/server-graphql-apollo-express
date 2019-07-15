@@ -12,23 +12,33 @@ import helmet from 'helmet'
 import schemaDirectives from './directives'
 import db, { mongoString } from './db'
 import {
-  APP_PORT,
-  SESSION_NAME,
-  SESSION_LIFE,
-  SESSION_SECRET,
-  SESSION_DB_COLLECTION,
-  ASSETS_DIR
+  APP_PORT
 } from './config'
-const IN_PROD = process.env.NODE_ENV === 'production'
-const port = process.env.PORT || APP_PORT
+const { 
+  NODE_ENV,
+  PORT,
+  SESSION_DB_COLLECTION,
+  SESSION_NAME,
+  SESSION_SECRET,
+  SESSION_LIFE,
+  ASSETS_DIR,
+  CLIENT_ADDR,
+  SERVER_ADDR,
+  DB_ADDR,
+} = process.env
+
+const IN_PROD = NODE_ENV === 'production'
+const port = PORT || APP_PORT
+
 console.log(IN_PROD)
+
 const app = express()
-app.use(cookieParser('sid'))
+app.use(cookieParser(SESSION_NAME))
 app.disable('x-powered-by')
 const MongoSessionStore = mongoDBStore(session)
 const store = new MongoSessionStore({
   uri: mongoString,
-  collection: process.env.SESSION_DB_COLLECTION
+  collection: SESSION_DB_COLLECTION
 })
 store.on('error', function (error) {
   console.log(error)
@@ -36,14 +46,14 @@ store.on('error', function (error) {
 app.set('trust proxy', 1)
 app.use(session({
   store,
-  name: process.env.SESSION_NAME,
-  secret: process.env.SESSION_SECRET,
+  name: SESSION_NAME,
+  secret: SESSION_SECRET,
   resave: true,
   httpOnly: IN_PROD,
   // rolling: true,
   saveUninitialized: false,
   cookie: {
-    maxAge: parseInt(process.env.SESSION_LIFE),
+    maxAge: parseInt(SESSION_LIFE),
     sameSite: false,
     secure: false // TODO: bring back IN_PROD
   }
@@ -71,11 +81,13 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   schemaDirectives,
-  playground: { 
-    settings: {
-      'request.credentials': 'same-origin'
-    }
-  }, // TODO: remember to block playground in prod
+  playground: IN_PROD
+    ? false
+    : {
+      settings: {
+        'request.credentials': 'same-origin'
+      }
+    }, // TODO: remember to block playground in prod
   uploads: {
     maxFieldSize: 2000000,
     maxFiles: 10
@@ -84,7 +96,7 @@ const server = new ApolloServer({
 })
 
 const corsOptions = {
-  origin: [],
+  origin: [CLIENT_ADDR],
   credentials: true,
   sameSite: false
 }
@@ -99,6 +111,6 @@ app.get('/', (req, res) => {
 })
 app.listen({ port }, async () => {
   await db()
-  console.log(`🚀 Server ready at http://localhost:${port}`)
+  console.log(`🚀 Server ready`)
 }
 )

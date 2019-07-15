@@ -107,7 +107,7 @@ server.applyMiddleware({
 })
 app.use(helmet())
 app.get('/', (req, res) => {
-  res.status(200).send('Ya Alla')
+  res.status(200).send('Ya Alla!!!!!!')
 })
 app.listen({ port }, async () => {
   await db()

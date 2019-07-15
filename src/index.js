@@ -23,7 +23,7 @@ const {
   SERVER_ADDR,
   DB_ADDR,
 } = process.env
-
+console.log('APP_PORT', APP_PORT)
 const IN_PROD = NODE_ENV === 'production'
 
 console.log(IN_PROD)

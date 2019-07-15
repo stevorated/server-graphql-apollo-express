@@ -55,7 +55,7 @@ app.use(session({
   cookie: {
     maxAge: parseInt(SESSION_LIFE),
     sameSite: false,
-    secure: false // TODO: bring back IN_PROD
+    secure: IN_PROD // TODO: bring back IN_PROD
   }
 }))
 
@@ -97,8 +97,8 @@ const server = new ApolloServer({
 
 const corsOptions = {
   origin: [CLIENT_ADDR],
-  credentials: true,
-  sameSite: false
+  credentials: true
+  // sameSite: false
 }
 
 server.applyMiddleware({

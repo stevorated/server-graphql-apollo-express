@@ -111,6 +111,6 @@ app.get('/', (req, res) => {
 })
 app.listen({ port }, async () => {
   await db()
-  console.log(`🚀 Server ready`)
+  console.log(`🚀 Server ready at localhost:${port}`)
 }
 )

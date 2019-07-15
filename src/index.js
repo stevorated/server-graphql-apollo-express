@@ -102,7 +102,7 @@ server.applyMiddleware({
   cors: corsOptions
 })
 app.use(helmet())
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.status(200).send('Ya Alla!!!!!!')
 })
 app.listen({ port: APP_PORT }, async () => {

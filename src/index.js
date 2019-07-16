@@ -50,7 +50,7 @@ app.use(session({
   cookie: {
     maxAge: parseInt(SESSION_LIFE),
     sameSite: false,
-    secure: IN_PROD // TODO: bring back IN_PROD
+    secure: false // TODO: bring back IN_PROD
   }
 }))
 

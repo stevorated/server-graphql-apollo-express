@@ -1,5 +1,4 @@
 import path from 'path'
-
 import { ApolloServer } from 'apollo-server-express'
 import express from 'express'
 import session from 'express-session'
@@ -11,7 +10,9 @@ import { protectedStatic } from './auth'
 import helmet from 'helmet'
 import schemaDirectives from './directives'
 import db, { mongoString } from './db'
-const { 
+
+const {
+  MY_DOMAIN,
   NODE_ENV,
   APP_PORT,
   SESSION_DB_COLLECTION,
@@ -19,14 +20,12 @@ const {
   SESSION_SECRET,
   SESSION_LIFE,
   ASSETS_DIR,
-  CLIENT_ADDR,
-  SERVER_ADDR,
-  DB_ADDR,
+  CLIENT_ADDR
 } = process.env
-console.log('APP_PORT', APP_PORT)
+
 const IN_PROD = NODE_ENV === 'production'
 
-console.log(IN_PROD)
+console.log('Production: ', IN_PROD)
 
 const app = express()
 app.use(cookieParser(SESSION_NAME))
@@ -51,7 +50,7 @@ app.use(session({
   cookie: {
     maxAge: parseInt(SESSION_LIFE),
     sameSite: false,
-    secure: false // TODO: bring back IN_PROD
+    secure: IN_PROD // TODO: bring back IN_PROD
   }
 }))
 
@@ -88,13 +87,14 @@ server.applyMiddleware({
   path: '/api/graphql',
   cors: corsOptions
 })
+
 app.use(helmet())
 app.get('/api', (req, res) => {
   res.status(200).send('Ya Alla!!!!!!')
 })
-server.graphqlPath = '/api/graphql'
+
 app.listen({ port: APP_PORT }, async () => {
   await db()
-  console.log(`🚀 Server ready at localhost:${APP_PORT}`)
+  console.log(`🚀 Server ready at ${MY_DOMAIN}:${APP_PORT}${server.graphqlPath}`)
 }
 )

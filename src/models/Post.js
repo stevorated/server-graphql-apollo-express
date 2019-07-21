@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
-
+import Notification from './Notification'
 const ObjectId = Schema.Types.ObjectId
 
 const postSchema = new mongoose.Schema({
@@ -23,6 +23,10 @@ const postSchema = new mongoose.Schema({
     required: true,
     ref: 'Comment'
   }],
+  likes: [{
+    type: ObjectId,
+    ref: 'User'
+  }],
   lastComment: {
     type: ObjectId,
     ref: 'Comment'
@@ -31,6 +35,32 @@ const postSchema = new mongoose.Schema({
   timestamps: true
 }
 )
+
+postSchema.pre('deleteOne', async function () {
+  const prev = this._conditions._id
+  await Notification.create({
+    from: prev.createdBy,
+    to: null,
+    show: false,
+    post: prev,
+    event: null,
+    body: `deleted a post saying: ${prev.body}`,
+    action: 'Delete-Post',
+    comment: null
+  })
+})
+
+postSchema.post('save', async function () {
+  await Notification.create({
+    from: this.createdBy,
+    to: null,
+    body: `posted ${this.body}`,
+    post: this,
+    action: 'Create-Post',
+    event: null,
+    comment: null
+  })
+})
 
 const Post = mongoose.model('Post', postSchema)
 

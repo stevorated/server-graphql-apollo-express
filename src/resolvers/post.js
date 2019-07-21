@@ -1,6 +1,6 @@
 import Joi from '@hapi/joi'
 import mongoose from 'mongoose'
-import { createPost } from '../joiSchemas'
+import { createPost, updatePost } from '../joiSchemas'
 import { User, Post, Comment } from '../models'
 import { UserInputError } from 'apollo-server-core'
 
@@ -41,6 +41,13 @@ export default {
       await User.updateOne({ _id: userId }, { $push: { posts: post } })
       return post
     },
+    updatePost: async (root, args, { req }, info) => {
+      const { userId } = req.session
+      const { body, createdBy } = args
+      await Joi.validate({ body, createdBy }, updatePost(createdBy), { abortEarly: false })
+      const post = await Post.findByIdAndUpdate(createdBy, { body }, { new: true })
+      return post
+    },
     deletePost: async (root, { post }, { req }, info) => {
       try {
         // VALIDATION
@@ -53,7 +60,7 @@ export default {
           // QUERY
           await User.updateOne({ _id: ObjectId(postOwner.id) }, { $pull: { posts: post } })
           await Comment.deleteMany({ post })
-          await Post.findByIdAndDelete(postToDeleteExists)
+          await Post.deleteOne({ _id: postToDeleteExists })
           return true
         } else {
           return new UserInputError('Invalid post ID!')
@@ -61,15 +68,36 @@ export default {
       } catch (e) {
         return e
       }
+    },
+    likePost: async (root, args, { req }, info) => {
+      const { userId } = req.session
+      const likePost = await Post.findById(args.id)
+      if (!likePost) {
+        return new UserInputError('Something went wrong!')
+      }
+      if (likePost.likes.includes(userId)) {
+        const postAfter = await Post.findOneAndUpdate({ _id: ObjectId(args.id) }, { $pull: { likes: userId } }, { new: true })
+        await User.updateOne({ _id: ObjectId(userId) }, { $pull: { likes: args.id } })
+        return postAfter
+      }
+      const postAfter = await Post.findOneAndUpdate({ _id: ObjectId(args.id) }, { $push: { likes: userId } }, { new: true })
+      await User.updateOne({ _id: ObjectId(userId) }, { $push: { likes: args.id } })
+      return postAfter
     }
   },
 
   Post: {
-    comments: async (user, args, context, info) => {
-      return (await user.populate('comments').execPopulate()).comments
+    comments: async (post, args, context, info) => {
+      const res = await post.populate('comments').execPopulate() 
+      return res.comments
     },
-    createdBy: async (user, args, context, info) => {
-      return (await user.populate('createdBy').execPopulate()).createdBy
+    createdBy: async (post, args, context, info) => {
+      const res = await post.populate('createdBy').execPopulate()
+      return res.createdBy
+    },
+    likes: async (post, args, context, info) => {
+      const res = await post.populate('likes').execPopulate()
+      return res.likes
     }
   }
 }

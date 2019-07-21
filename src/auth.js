@@ -1,7 +1,7 @@
 import { AuthenticationError } from 'apollo-server-express'
 import { User } from './models'
-import { SESSION_NAME } from './config'
 
+const { SESSION_NAME } = process.env
 const message = 'Wrong Details. Try again'
 
 export const attmeptSignIn = async (email, password) => {

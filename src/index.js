@@ -24,10 +24,11 @@ const {
 } = process.env
 
 const IN_PROD = NODE_ENV === 'production'
-
 console.log('Production: ', IN_PROD)
+const assetsDir = path.join(__dirname, '..', ASSETS_DIR)
 
 const app = express()
+
 app.use(cookieParser(SESSION_NAME))
 app.disable('x-powered-by')
 const MongoSessionStore = mongoDBStore(session)
@@ -45,17 +46,16 @@ app.use(session({
   secret: SESSION_SECRET,
   resave: true,
   httpOnly: IN_PROD,
-  // rolling: true,
+  rolling: true,
   saveUninitialized: false,
   cookie: {
     maxAge: parseInt(SESSION_LIFE),
-    sameSite: false,
+    sameSite: true,
     secure: false // TODO: bring back IN_PROD
   }
 }))
 
 app.use('/api/images', protectedStatic)
-const assetsDir = path.join(__dirname, '..', ASSETS_DIR)
 app.use('/api/images', express.static(assetsDir))
 
 const server = new ApolloServer({

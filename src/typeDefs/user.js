@@ -18,6 +18,8 @@ export default gql`
             ): User @guest
         signIn(email: String! , password: String!): User @guest
         signOut: Boolean @auth
+        updateMyProfile(username: String, fname: String, lname: String, aboutMe: String, dataOfBirth: String, sex: String): User @auth
+        follow(id: ID!): User @auth
     }
 
     input UserFilter {
@@ -34,7 +36,10 @@ export default gql`
         fname: String!
         lname: String!
         posts: [Post]!
+        likes: [Post]
         avatar: File
+        following: [User]
+        followers: [User]
         createdAt: String!
         updatedAt: String!
     }

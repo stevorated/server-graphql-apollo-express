@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
-
+import Notification from './Notification'
 const ObjectId = Schema.Types.ObjectId
 
 const eventSchema = new mongoose.Schema({
@@ -100,6 +100,32 @@ const eventSchema = new mongoose.Schema({
   timestamps: true
 }
 )
+
+eventSchema.pre('deleteOne', async function () {
+  console.log('removing')
+  const prev = this._conditions._id
+  const notification = await Notification.create({
+    from: prev.createdBy,
+    to: null,
+    evemt: prev,
+    show: false,
+    body: `deleted an evemt saying: ${prev.name}`,
+    action: 'Delete-Event'
+  })
+  console.log(notification)
+  // next()
+})
+
+eventSchema.post('save', async function () {
+  const notification = await Notification.create({
+    from: this.createdBy,
+    to: null,
+    body: `published a new event ${this.name}`,
+    event: this,
+    action: 'Create-Event'
+  })
+  console.log(notification)
+})
 
 const Event = mongoose.model('Event', eventSchema)
 

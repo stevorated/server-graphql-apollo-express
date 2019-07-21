@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 import { hash, compare } from 'bcryptjs'
+import Notification from './Notification'
 
 const ObjectId = Schema.Types.ObjectId
 
@@ -54,10 +55,22 @@ const userSchema = new mongoose.Schema({
     type: ObjectId,
     ref: 'Post'
   }],
+  likes: [{
+    type: ObjectId,
+    ref: 'Post'
+  }],
   avatar: {
     type: ObjectId,
     ref: 'File'
   },
+  following: [{
+    type: ObjectId,
+    ref: 'User'
+  }],
+  followers: [{
+    type: ObjectId,
+    ref: 'User'
+  }],
   events: {
     type: ObjectId,
     ref: 'Event'
@@ -80,6 +93,42 @@ userSchema.statics.doesntExist = async function (options) {
 userSchema.methods.passwordMatch = function (password) {
   return compare(password, this.password)
 }
+
+userSchema.post('save', async function () {
+  if (this._update && (this._update.$push || this._update.$pull)) {
+    console.log('unknown')
+  } else {
+    await Notification.create({
+      from: this.id,
+      to: null,
+      body: `new account created!,  username: ${this.username}`,
+      show: false,
+      action: 'Create-Profile',
+      event: null,
+      post: null,
+      comment: null
+    })
+  }
+})
+
+userSchema.post('updateOne', async function (next) {
+  const { username, fname, lname, id } = this._update
+  if (this._update && (this._update.$push || this._update.$pull)) {
+    console.log('unknown')
+  } else {
+    await Notification.create({
+      from: this._conditions._id,
+      to: null,
+      body: `update his profile details are: {${username}, ${fname}, ${lname}}`,
+      show: false,
+      action: 'Update-Profile',
+      event: null,
+      post: null,
+      comment: null
+    })
+  }
+  // console.log(notification)
+})
 
 const User = mongoose.model('User', userSchema)
 

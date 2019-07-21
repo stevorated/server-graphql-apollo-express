@@ -2,8 +2,11 @@ import Joi from '@hapi/joi'
 
 const email = Joi.string().email().required().label('Email')
 const username = Joi.string().alphanum().min(4).max(30).required().label('Username')
-const fname = Joi.string().max(100).required().label('First Name')
-const lname = Joi.string().max(100).required().label('Last Name')
+const fname = Joi.string().min(2).max(100).required().label('First Name')
+const lname = Joi.string().min(2).max(100).required().label('Last Name')
+const usernameUpdate = Joi.string().alphanum().min(4).max(30).label('Username')
+const fnameUpdate = Joi.string().min(2).max(100).label('First Name')
+const lnameUpdate = Joi.string().min(2).max(100).label('Last Name')
 const password = Joi.string().min(8).max(30).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*^?&#])[A-Za-z\d@$!%#*^?&]{8,30}$/).required().label('Password').options({
   language: {
     string: {
@@ -33,4 +36,10 @@ export const signUp = Joi.object().keys({
 export const signIn = Joi.object().keys({
   email,
   password
+})
+
+export const updateMyProfile = Joi.object().keys({
+  username: usernameUpdate,
+  fname: fnameUpdate,
+  lname: lnameUpdate
 })

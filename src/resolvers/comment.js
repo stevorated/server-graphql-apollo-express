@@ -1,7 +1,11 @@
 import Joi from '@hapi/joi'
-import { createComment } from '../joiSchemas'
+import { createComment, updateComment } from '../joiSchemas'
 import { Post, Comment } from '../models'
-// import { UserInputError } from 'apollo-server-core'
+import { UserInputError } from 'apollo-server-core'
+import { ApolloError } from 'apollo-server-express'
+import mongoose from 'mongoose'
+
+const { ObjectId } = mongoose.Types
 
 export default {
   Mutation: {
@@ -9,15 +13,37 @@ export default {
       const { userId } = req.session
       const { body, post } = args
       await Joi.validate(args, createComment(post), { abortEarly: false })
-      // const idsFound = await User.where('_id').in(userIds).countDocuments()
-      // if (idsFound !== userIds.length) {
-      //   throw new UserInputError('One or more UserIds are INVALID')
-      // }
-      // userIds.push(userId)
       const comment = await Comment.create({ body, createdBy: userId, post })
-      // await User.updateOne({_id: })
       await Post.updateOne({ _id: post }, { $push: { comments: comment } })
       return comment
+    },
+    updateComment: async (root, args, { req }, info) => {
+      const { userId } = req.session
+      const { body, id } = args
+      await Joi.validate(args, updateComment(id), { abortEarly: false })
+      const comment = await Comment.findByIdAndUpdate(id, { body }, { new: true })
+      return comment
+    },
+    deleteComment: async (root, args, { req }, info) => {
+      try {
+        // VALIDATION
+        const { userId } = req.session
+        const commentToDelete = await Comment.findById(args.id)
+        if (commentToDelete) {
+          if (commentToDelete.createdBy.toString() !== userId) {
+            return new ApolloError('Hey It\'s Not Your Comment!')
+          }
+          // QUERY
+          await Post.findOneAndUpdate({ _id: commentToDelete.post }, { $pull: { comments: commentToDelete._id } }, { new: true })
+          const comment = await Comment.findById(commentToDelete.id)
+          await Comment.deleteOne({ _id: commentToDelete })
+          return comment
+        } else {
+          return new UserInputError(`something went wrong, probably wrong ID, or comment don't exist anymore... (1) `)
+        }
+      } catch (e) {
+        return new UserInputError(`something went wrong, probably wrong ID, or comment don't exist anymore... (2) `)
+      }
     }
   },
   Comment: {

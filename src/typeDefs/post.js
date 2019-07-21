@@ -3,7 +3,9 @@ import { gql } from 'apollo-server-express'
 export default gql`
   extend type Mutation {
     createPost(body: String): Post @auth
+    updatePost(body: String, createdBy: ID!): Post @auth
     deletePost(post: ID!): Boolean @auth
+    likePost(id: ID!): Post @auth
   }
 
   extend type Query {
@@ -17,6 +19,7 @@ export default gql`
     body: String!
     createdBy: User!
     comments: [Comment!] # // TODO: consider removing "!"
+    likes: [User]
     lastComments: Comment
     createdAt: String!
     updatedAt: String!

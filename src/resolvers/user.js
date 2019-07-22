@@ -1,6 +1,6 @@
 import Joi from '@hapi/joi'
 import mongoose from 'mongoose'
-import { User } from '../models'
+import { User, Notification } from '../models'
 import { UserInputError } from 'apollo-server-express'
 import { attmeptSignIn, signOut } from '../auth'
 import { signIn, signUp, updateMyProfile } from '../joiSchemas'
@@ -85,11 +85,29 @@ export default {
       if (myUser.following && myUser.following.includes(userToFollow.id)) {
         await User.findByIdAndUpdate(myUser.id, { $pull: { following: userToFollow.id } }, { new: true })
         const updatedUserToFollow = await User.findByIdAndUpdate(args.id, { $pull: { followers: myUser.id } }, { new: true })
+        await Notification.create({
+          from: myUser.id,
+          to: userToFollow.id,
+          body: `unfollowed ${myUser.id}`,
+          action: 'Unfollow-User',
+          event: null,
+          post: null,
+          comment: null
+        })
         return updatedUserToFollow
       }
       await User.findByIdAndUpdate(myUser.id, { $push: { following: userToFollow.id } }, { new: true })
       const updatedUserToFollow = await User.findByIdAndUpdate(args.id, { $push: { followers: myUser.id } }, { new: true })
       // console.log(updatedUserToFollow)
+      await Notification.create({
+        from: myUser.id,
+        to: userToFollow.id,
+        body: `followed ${myUser.id}`,
+        action: 'Follow-User',
+        event: null,
+        post: null,
+        comment: null
+      })
       return updatedUserToFollow
     }
   },

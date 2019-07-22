@@ -1,9 +1,12 @@
-/node_modules
+createSocket.js
 
+/node_modules
+package-lock.json
 *.log*
 .env
-/config
-assets
+config/
+assets/
+playground/
 # dependencies
 *.lock
 /.pnp

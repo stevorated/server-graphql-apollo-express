@@ -62,6 +62,20 @@ postSchema.post('save', async function () {
   })
 })
 
+// postSchema.post('updateOne', async function () {
+//   console.log('Ya alla')
+//   console.log(this)
+//   // await Notification.create({
+//   //   from: this.createdBy,
+//   //   to: null,
+//   //   body: `posted ${this.body}`,
+//   //   post: this,
+//   //   action: 'Create-Post',
+//   //   event: null,
+//   //   comment: null
+//   // })
+// })
+
 const Post = mongoose.model('Post', postSchema)
 
 export default Post

@@ -25,14 +25,16 @@
     "jimp": "^0.6.4",
     "mkdirp": "^0.5.1",
     "mongoose": "^5.5.5",
+    "node-static": "^0.7.11",
     "passport": "^0.4.0",
     "passport-facebook": "^3.0.0",
     "react-router-dom": "^5.0.0",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "sockjs": "^0.3.19"
   },
   "devDependencies": {
     "errorhandler": "^1.5.1",
-    "nodemon": "^1.18.4",
+    "nodemon": "^1.19.1",
     "standard": "^12.0.1"
   }
 }

@@ -1,7 +1,7 @@
 import Joi from '@hapi/joi'
 import mongoose from 'mongoose'
 import { createPost, updatePost } from '../joiSchemas'
-import { User, Post, Comment } from '../models'
+import { User, Post, Comment, Notification } from '../models'
 import { UserInputError } from 'apollo-server-core'
 
 const { ObjectId } = mongoose.Types
@@ -76,19 +76,42 @@ export default {
         return new UserInputError('Something went wrong!')
       }
       if (likePost.likes.includes(userId)) {
-        const postAfter = await Post.findOneAndUpdate({ _id: ObjectId(args.id) }, { $pull: { likes: userId } }, { new: true })
+        await Post.updateOne({ _id: ObjectId(args.id) }, { $pull: { likes: userId } })
+        const postAfter = await Post.findById(args.id)
         await User.updateOne({ _id: ObjectId(userId) }, { $pull: { likes: args.id } })
+        await Notification.create({
+          from: userId,
+          // show: false,
+          to: postAfter.createdBy.id,
+          body: `unliked post id:${args.id}`,
+          post: args.id,
+          action: 'Unlike-Post',
+          event: null,
+          comment: null
+        })
         return postAfter
       }
-      const postAfter = await Post.findOneAndUpdate({ _id: ObjectId(args.id) }, { $push: { likes: userId } }, { new: true })
+      await Post.updateOne({ _id: ObjectId(args.id) }, { $push: { likes: userId } })
+      const postAfter = await Post.findById(args.id)
+
       await User.updateOne({ _id: ObjectId(userId) }, { $push: { likes: args.id } })
+      await Notification.create({
+        from: userId,
+        // show: false,
+        to: postAfter.createdBy.id,
+        body: `liked post id:${args.id}`,
+        post: args.id,
+        action: 'Like-Post',
+        event: null,
+        comment: null
+      })
       return postAfter
     }
   },
 
   Post: {
     comments: async (post, args, context, info) => {
-      const res = await post.populate('comments').execPopulate() 
+      const res = await post.populate('comments').execPopulate()
       return res.comments
     },
     createdBy: async (post, args, context, info) => {

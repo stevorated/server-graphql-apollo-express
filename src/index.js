@@ -36,8 +36,7 @@ const assetsDir = path.join(__dirname, '..', ASSETS_DIR)
 
 const app = express()
 // ================================================ FB LOGIN ==============================
-console.log(`${MY_PUBLIC_DOMAIN}${FB_LOGIN_CB_PATH}`)
-// console.log(APP_ID, APP_SECRET, 'dsfdsf')
+console.log(APP_ID, APP_SECRET, 'dsfdsf')
 passport.use(new FacebookStrategy({
   clientID: APP_ID,
   clientSecret: APP_SECRET,

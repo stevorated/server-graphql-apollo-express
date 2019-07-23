@@ -112,7 +112,7 @@ userSchema.post('save', async function () {
 })
 
 userSchema.post('updateOne', async function (next) {
-  const { username, fname, lname, id } = this._update
+  const { username, fname, lname } = this._update
   if (this._update && (this._update.$push || this._update.$pull)) {
     console.log('unknown')
   } else {

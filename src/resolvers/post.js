@@ -82,7 +82,7 @@ export default {
         await Notification.create({
           from: userId,
           // show: false,
-          to: postAfter.createdBy.id,
+          to: postAfter.createdBy,
           body: `unliked post id:${args.id}`,
           post: args.id,
           action: 'Unlike-Post',
@@ -98,7 +98,7 @@ export default {
       await Notification.create({
         from: userId,
         // show: false,
-        to: postAfter.createdBy.id,
+        to: postAfter.createdBy,
         body: `liked post id:${args.id}`,
         post: args.id,
         action: 'Like-Post',

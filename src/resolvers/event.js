@@ -8,6 +8,7 @@ import path from 'path'
 import { createWriteStream, existsSync } from 'fs'
 import mkdirp from 'mkdirp'
 import Jimp from 'jimp'
+import moment from 'moment'
 
 const { ASSETS_DIR, EVENT_IMAGE_DIR } = process.env
 
@@ -20,21 +21,32 @@ const { ObjectId } = mongoose.Types
 
 export default {
   Query: {
-    getMyEvents: async (root, { limit = 5, skip = 0, sort = -1 }, { req }, info) => {
+    getMyEvents: async (root, { limit = 6, skip = 0, sort = 1 }, { req }, info) => {
+      if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`)
+      if (!ObjectId.isValid(req.session.userId)) throw new UserInputError(`invalid ID`)
+      return Event.find({ createdBy: ObjectId(req.session.userId), startDate: { $gte: moment().format('YYYY-MM-DD') } }, null, { sort: { startDate: sort }, limit, skip })
+    },
+    getMyEventsFeed: async (root, { limit = 6, skip = 0, sort = 1 }, { req }, info) => {
       if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`)
       if (!ObjectId.isValid(req.session.userId)) throw new UserInputError(`invalid ID`)
       return Event.find({ createdBy: ObjectId(req.session.userId) }, null, { sort: { createdAt: sort }, limit, skip })
     },
-    getEvents: async (root, { id, limit = 5, skip = 0, sort = -1 }, { req }, info) => {
+    getEvents: async (root, { id, limit = 6, skip = 0, sort = 1 }, { req }, info) => {
       if (id && !ObjectId.isValid(id)) throw new UserInputError(`invalid ID`)
       if (id && ObjectId.isValid(id)) return [Event.findById(id)]
       if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`)
-      return Event.find({}, null, { sort: { createdAt: sort }, limit, skip })
+      return Event.find({ startDate: { $gte: moment().format('YYYY-MM-DD') } }, null, { sort: { startDate: sort }, limit, skip })
     },
-    getUsersEvents: async (root, { id, limit = 5, skip = 0, sort = -1 }, { req }, info) => {
+    getEventsFeed: async (root, { id, limit = 6, skip = 0, sort = 1 }, { req }, info) => {
+      if (id && !ObjectId.isValid(id)) throw new UserInputError(`invalid ID`)
+      if (id && ObjectId.isValid(id)) return [Event.findById(id)]
+      if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`)
+      return Event.find({ }, null, { sort: { createdAt: sort }, limit, skip })
+    },
+    getUsersEvents: async (root, { id, limit = 6, skip = 0, sort = 1 }, { req }, info) => {
       if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`)
       if (!ObjectId.isValid(id)) throw new UserInputError(`invalid ID`)
-      return Event.find({ createdBy: ObjectId(id) }, null, { sort: { createdAt: sort }, limit, skip })
+      return Event.find({ createdBy: ObjectId(id) }, null, { sort: { startDate: sort }, limit, skip })
     }
   },
   Mutation: {

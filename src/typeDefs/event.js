@@ -21,7 +21,9 @@ export default gql`
 
   extend type Query {
     getMyEvents(sort: Int ,limit: Int, skip: Int): [Event] @auth
+    getMyEventsFeed(sort: Int ,limit: Int, skip: Int): [Event] @auth
     getEvents(id: ID, limit: Int, skip: Int): [Event] @auth
+    getEventsFeed(id: ID, limit: Int, skip: Int): [Event] @auth
     getUsersEvents(id: ID! sort: Int ,limit: Int, skip: Int): [Event] @auth
   }
 

@@ -55,12 +55,15 @@ app.use(passport.initialize())
 passport.serializeUser(function (user, done) {
   done(null, user)
 })
-app.get(FB_LOGIN_PATH,
-  passport.authenticate('facebook'))
+app.get(FB_LOGIN_PATH, (req, res) => {
+  res.send(`<h1>${FB_LOGIN_PATH}</h1>`)
+  passport.authenticate('facebook')
+})
 app.get(FB_LOGIN_CB_PATH,
   passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
   function (req, res) {
-    // console.log(res)
+    console.log(res)
+    res.send(`<h1>${FB_LOGIN_CB_PATH}</h1>`)
     // Successful authentication, redirect home.
     res.send('auth GOOD!')
   })

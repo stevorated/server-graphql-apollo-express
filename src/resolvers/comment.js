@@ -31,6 +31,7 @@ export default {
         // VALIDATION
         const session = req.session.passport ? req.session.passport.user : req.session
         const { userId } = session
+        console.log('deleteComment', userId)
         const commentToDelete = await Comment.findById(args.id)
         if (commentToDelete) {
           if (commentToDelete.createdBy.toString() !== userId) {

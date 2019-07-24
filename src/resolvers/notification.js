@@ -45,9 +45,11 @@ export default {
       skip = 0,
       sort = -1
     }, { req }, info) => {
+      const session = req.session.passport ? req.session.passport.user : req.session
+      const { userId } = session
       // VALIDATION
       if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`) // CHANGED
-      if (!ObjectId.isValid(req.session.userId ? req.session.userId : req.session.passport.user.userId)) throw new UserInputError(`invalid ID`) // CHANGED - REMOVED CURELY BRACES
+      if (!ObjectId.isValid(userId)) throw new UserInputError(`invalid ID`) // CHANGED - REMOVED CURELY BRACES
       // QUERY
       const res = await Notification.find({ show: true }, null, { sort: { createdAt: sort }, limit, skip })
       return res
@@ -60,9 +62,11 @@ export default {
       show = false,
       to = null
     }, { req }, info) => {
+      const session = req.session.passport ? req.session.passport.user : req.session
+      const { userId } = session
       // VALIDATION
       if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`)
-      if (!ObjectId.isValid(req.session.userId ? req.session.userId : req.session.passport.user.userId)) throw new UserInputError(`invalid ID`)
+      if (!ObjectId.isValid(userId)) throw new UserInputError(`invalid ID`)
 
       // QUERY
       const res = await Notification.find({ to, show }, null, { sort: { createdAt: sort }, limit, skip })

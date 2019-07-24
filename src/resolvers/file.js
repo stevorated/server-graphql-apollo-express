@@ -20,13 +20,15 @@ export default {
   },
   Mutation: {
     singleUpload: async (root, args, { req }) => {
+      const session = req.session.passport ? req.session.passport.user : req.session
+      const { userId } = session
       console.log(args)
       // const { file, size, height, width, x, y } = args
       // console.log({ aspect, height, width, unit, x, y })
       return processUpload(
         args,
         'avatar',
-        req.session.userId ? req.session.userId : req.session.passport.user.userId)
+        userId)
     }
   },
   File: {

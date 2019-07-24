@@ -53,12 +53,14 @@ export default {
       return post
     },
     deletePost: async (root, { post }, { req }, info) => {
+      const session = req.session.passport ? req.session.passport.user : req.session
+      const { userId } = session
       try {
         // VALIDATION
         const postToDeleteExists = await Post.findById(post)
         if (postToDeleteExists) {
           const postOwner = await User.findById(postToDeleteExists.createdBy)
-          if (postOwner.id !== req.session.passport ? req.session.passport.user.userId : req.session.userId) {
+          if (postOwner.id !== userId) {
             return new UserInputError('Hey It\'s Not Your Post!')
           }
           // QUERY

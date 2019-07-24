@@ -17,9 +17,8 @@ export const attmeptSignIn = async (email, password) => {
 }
 
 export const signedIn = req => {
-  console.log(req.session.passport.userId)
   console.log(req.session.userId, req.session.passport.userId)
-  return req.session.userId || req.session.passport._json.userId
+  return req.session.userId || req.session.passport.user._json.userId
 }
 
 export const ensureSignedIn = req => {

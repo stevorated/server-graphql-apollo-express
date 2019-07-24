@@ -109,12 +109,15 @@ passport.use(new FacebookStrategy({
   profileFields: ['id', 'name', 'email']
 },
 function (accessToken, refreshToken, profile, cb) {
-
+  console.log('PROFILE')
+  console.log(profile)
+  console.log(accessToken)
+  console.log(refreshToken)
   cb(undefined, profile)
 }))
 app.use(passport.initialize())
 passport.serializeUser(function (user, done) {
-  console.log(user)
+  // console.log(user)
   done(null, user)
 })
 app.get(FB_LOGIN_PATH,

@@ -14,7 +14,7 @@ export default {
       let to = null
       if (args.post) {
         const post = await Post.findById(args.post)
-        console.log(post)
+        // console.log(post)
         if (post.createdBy.toString() === userId) {
           return new ApolloError('No need for notifications on yourself, ehh?')
         } else {

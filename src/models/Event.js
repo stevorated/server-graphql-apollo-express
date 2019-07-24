@@ -112,7 +112,7 @@ eventSchema.pre('deleteOne', async function () {
     body: `deleted an evemt saying: ${prev.name}`,
     action: 'Delete-Event'
   })
-  console.log(notification)
+  // console.log(notification)
   // next()
 })
 
@@ -124,7 +124,7 @@ eventSchema.post('save', async function () {
     event: this,
     action: 'Create-Event'
   })
-  console.log(notification)
+  // console.log(notification)
 })
 
 const Event = mongoose.model('Event', eventSchema)

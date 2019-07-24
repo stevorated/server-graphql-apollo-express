@@ -10,7 +10,7 @@ const { ObjectId } = mongoose.Types
 export default {
   Query: {
     me: (root, args, { req }, info) => {
-      console.log('me')
+      // console.log('me')
       return User.findById(req.session.userId ? req.session.userId : req.session.passport.user.userId )
     },
     users: (root, args, { req }, info) => {
@@ -63,7 +63,7 @@ export default {
       const { userId } = req.session
       const { username, fname, lname } = args
       const usernameTaken = !await User.doesntExist({ username })
-      console.log('taken?', usernameTaken)
+      // console.log('taken?', usernameTaken)
       if (usernameTaken) {
         return new UserInputError('Sorry this username is already taken')
       }

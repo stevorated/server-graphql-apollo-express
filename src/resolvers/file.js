@@ -54,7 +54,7 @@ const processUpload = async (upload, type, userId) => {
           { abortEarly: false }
         )
         const user = await User.findById(userId)
-        console.log(user.avatar)
+        // console.log(user.avatar)
         const fileToDelete = await File.findByIdAndDelete(user.avatar)
         if (fileToDelete) {
           unlink(fileToDelete.path, () => {})

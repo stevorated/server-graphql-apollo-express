@@ -48,3 +48,33 @@ export const protectedStatic = (req, res, done) => {
     done()
   }
 }
+
+export const facebookSignUp = async (data) => {
+  try {
+    const { id, name, authToken } = data
+    const { first_name, last_name } = name
+    const user = await User.create({
+      fbUser: id,
+      fname: first_name,
+      lname: last_name,
+      username: `${first_name}_${last_name}${Date.now()}`,
+      password: authToken
+    })
+    
+    return true
+    // Successful authentication, redirect home.
+  } catch (err) {
+    throw new Error('something went wrong')
+  }
+
+}
+
+export const facebookSignUpValidate = async (req, res) => {
+  try {
+    const user = await User.findOne({ fbId: req.id })
+    req.session.userId = user.id
+    return res.redirect('https://wisdomofdecrowd.com')
+  } catch (err) {
+    return res.status(404).send('<h1>Something went wonnngg</h1>')
+  }
+}

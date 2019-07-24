@@ -7,7 +7,7 @@ import mongoDBStore from 'connect-mongodb-session'
 import helmet from 'helmet'
 import typeDefs from './typeDefs'
 import resolvers from './resolvers'
-import { protectedStatic } from './auth'
+import { protectedStatic, facebookSignUp, facebookSignUpValidate } from './auth'
 import schemaDirectives from './directives'
 import db, { mongoString } from './db'
 import passport from 'passport'
@@ -43,11 +43,8 @@ passport.use(new FacebookStrategy({
   profileFields: ['id', 'name', 'email']
 },
 function (accessToken, refreshToken, profile, cb) {
-  console.log(accessToken)
-  console.log(refreshToken)
-  // console.log(profile.id)
-  // console.log(profile.name)
-  // console.log(profile)
+  const { id, name } = profile
+  facebookSignUp({ accessToken, id, name })
   cb(undefined, profile)
 }))
 app.use(passport.initialize())
@@ -59,9 +56,9 @@ app.get(FB_LOGIN_PATH,
 app.get(FB_LOGIN_CB_PATH,
   passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
   function (req, res) {
-    console.log(res)
+    facebookSignUpValidate(req, res)
     // Successful authentication, redirect home.
-    res.send('auth GOOD!')
+    // res.send('auth GOOD!')
   })
 // ==================================== END FB LOGIN =====================================
 app.use(cookieParser(SESSION_NAME))

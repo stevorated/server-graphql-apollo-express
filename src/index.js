@@ -131,7 +131,7 @@ passport.serializeUser(async function (user, done) {
     password: id
   })
   user.userId = dbUser._id
-  console.log('dbUser: ', dbUser)
+  // console.log('dbUser: ', dbUser)
   done(null, user)
 })
 app.get(FB_LOGIN_PATH,
@@ -140,7 +140,7 @@ app.get(FB_LOGIN_CB_PATH,
   passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
   function (req, res) {
     facebookSignUpValidate(req, res)
-    console.log(req.session)
+    console.log(req.session.passport.user)
     // Successful authentication, redirect home.
     res.redirect('https://wisdomofdecrowd.com')
   })

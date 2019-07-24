@@ -110,7 +110,7 @@ passport.use(new FacebookStrategy({
   profileFields: ['id', 'name', 'email']
 },
 function (accessToken, refreshToken, profile, cb) {
-  console.log('PROFILE')
+  // console.log('PROFILE')
   // console.log(profile)
   // console.log(accessToken)
   // console.log(refreshToken)
@@ -119,7 +119,7 @@ function (accessToken, refreshToken, profile, cb) {
 }))
 app.use(passport.initialize())
 passport.serializeUser(async function (user, done) {
-  console.log('user:', user)
+  // console.log('user:', user)
   const { id, name, emails } = user
   const { familyName, givenName } = name
   const dbUser = await User.create({
@@ -140,7 +140,7 @@ app.get(FB_LOGIN_CB_PATH,
   passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
   function (req, res) {
     facebookSignUpValidate(req, res)
-    console.log(req.session.passport.user)
+    console.log('facebookSignUpValidate', req.session.passport.user)
     // Successful authentication, redirect home.
     res.redirect('https://wisdomofdecrowd.com')
   })

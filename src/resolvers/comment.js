@@ -10,7 +10,7 @@ const { ObjectId } = mongoose.Types
 export default {
   Mutation: {
     createComment: async (root, args, { req }, info) => {
-      const session = req.session.passport ? req.session.passport.user : req.session
+      const session = req.session.passport ? req.session.passport.user.userId : req.session
       const { userId } = session
       const { body, post } = args
       await Joi.validate(args, createComment(post), { abortEarly: false })
@@ -19,7 +19,7 @@ export default {
       return comment
     },
     updateComment: async (root, args, { req }, info) => {
-      const session = req.session.passport ? req.session.passport.user : req.session
+      const session = req.session.passport ? req.session.passport.user.userId : req.session
       const { userId } = session
       const { body, id } = args
       await Joi.validate(args, updateComment(id), { abortEarly: false })
@@ -29,10 +29,10 @@ export default {
     deleteComment: async (root, args, { req }, info) => {
       try {
         // VALIDATION
-        const session = req.session.passport ? req.session.passport.user : req.session
+        const session = req.session.passport ? req.session.passport.user.userId : req.session
         const { userId } = session
-        console.log('deleteComment', userId)
         const commentToDelete = await Comment.findById(args.id)
+        console.log('deleteComment', userId, commentToDelete.createdBy.toString(), commentToDelete.createdBy.toString() !== userId)
         if (commentToDelete) {
           if (commentToDelete.createdBy.toString() !== userId) {
             return new ApolloError('Hey It\'s Not Your Comment!')

@@ -60,7 +60,7 @@ export default {
         const postToDeleteExists = await Post.findById(post)
         if (postToDeleteExists) {
           const postOwner = await User.findById(postToDeleteExists.createdBy)
-          if (postOwner.id !== userId) {
+          if (postOwner.id.toString() !== userId.toString()) {
             return new UserInputError('Hey It\'s Not Your Post!')
           }
           // QUERY

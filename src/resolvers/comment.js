@@ -32,10 +32,9 @@ export default {
         const session = req.session.passport ? req.session.passport.user : req.session
         const { userId } = session
         const commentToDelete = await Comment.findById(args.id)
-        console.log('deleteComment', userId, commentToDelete.createdBy.toString(), commentToDelete.createdBy.toString() !== userId.toString())
         if (commentToDelete) {
           console.log()
-          if (commentToDelete.createdBy.toString() !== userId.toString() && commentToDelete.createdBy !== userId.toString()) {
+          if (commentToDelete.createdBy.toString() !== userId.toString()) {
             return new ApolloError('Hey It\'s Not Your Comment!')
           }
           // QUERY

@@ -144,7 +144,7 @@ app.get(FB_LOGIN_CB_PATH,
     // Successful authentication, redirect home.
     setTimeout(() => {
       res.redirect(FB_SUCCESS_URL)
-    }, 1000)
+    }, 5000)
   })
 
 app.get(FB_LOGIN_FAIL_PATH, (req, res) => {

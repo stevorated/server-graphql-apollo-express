@@ -34,6 +34,9 @@ const userSchema = new mongoose.Schema({
     trim: true,
     minlength: [2, 'first name too short! must be at least 2 letters long ']
   },
+  fbId: {
+    type: String
+  },
   lname: {
     type: String,
     required: true,

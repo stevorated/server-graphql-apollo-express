@@ -49,15 +49,7 @@ export const protectedStatic = (req, res, done) => {
   }
 }
 
-export const facebookSignUp = async (data) => {
-  // console.log(data)
-  
-  // console.log(user)
-  return true
-  // Successful authentication, redirect home.
-}
-
-export const facebookSignUpValidate = async (req, res) => {
+export const facebookSignUp = async (req, res) => {
   try {
     // const user = await User.find({ fbId: req.id })
     // console.log(req.user)

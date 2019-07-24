@@ -11,9 +11,9 @@ export default {
     getMyPosts: async (root, { id, limit = null, skip = 0, sort = -1 }, { req }, info) => {
       // VALIDATION
       if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`) // CHANGED
-      if (!ObjectId.isValid(req.session.userId)) throw new UserInputError(`invalid ID`) // CHANGED - REMOVED CURELY BRACES
+      if (!ObjectId.isValid(req.session.userId ? req.session.userId : req.session.passport.user.userId)) throw new UserInputError(`invalid ID`) // CHANGED - REMOVED CURELY BRACES
       // QUERY
-      const posts = await Post.find({ createdBy: ObjectId(req.session.userId) }, null, { sort: { createdAt: sort }, limit, skip })
+      const posts = await Post.find({ createdBy: ObjectId(req.session.userId ? req.session.userId : req.session.passport.user.userId) }, null, { sort: { createdAt: sort }, limit, skip })
       return posts
     },
     getPosts: async (root, { limit = null, skip = 0 }, { req }, info) => {
@@ -54,7 +54,7 @@ export default {
         const postToDeleteExists = await Post.findById(post)
         if (postToDeleteExists) {
           const postOwner = await User.findById(postToDeleteExists.createdBy)
-          if (postOwner.id !== req.session.userId) {
+          if (postOwner.id !== req.session.userId ? req.session.userId : req.session.passport.user.userId) {
             return new UserInputError('Hey It\'s Not Your Post!')
           }
           // QUERY

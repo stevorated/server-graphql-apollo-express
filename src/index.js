@@ -7,7 +7,7 @@ import mongoDBStore from 'connect-mongodb-session'
 import helmet from 'helmet'
 import typeDefs from './typeDefs'
 import resolvers from './resolvers'
-import { protectedStatic, facebookSignUp, facebookSignUpValidate } from './auth'
+import { protectedStatic, facebookSignUp } from './auth'
 import schemaDirectives from './directives'
 import db, { mongoString } from './db'
 import passport from 'passport'
@@ -110,16 +110,10 @@ passport.use(new FacebookStrategy({
   profileFields: ['id', 'name', 'email']
 },
 function (accessToken, refreshToken, profile, cb) {
-  // console.log('PROFILE')
-  // console.log(profile)
-  // console.log(accessToken)
-  // console.log(refreshToken)
-  // facebookSignUp(profile)
   cb(undefined, profile)
 }))
 app.use(passport.initialize())
 passport.serializeUser(async function (user, done) {
-  // console.log('user:', user)
   const { id, name, emails } = user
   const { familyName, givenName } = name
   const dbUser = await User.create({
@@ -131,7 +125,6 @@ passport.serializeUser(async function (user, done) {
     password: id
   })
   user.userId = dbUser._id
-  // console.log('dbUser: ', dbUser)
   done(null, user)
 })
 app.get(FB_LOGIN_PATH,
@@ -139,7 +132,7 @@ app.get(FB_LOGIN_PATH,
 app.get(FB_LOGIN_CB_PATH,
   passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
   function (req, res) {
-    facebookSignUpValidate(req, res)
+    facebookSignUp(req, res)
     console.log('facebookSignUpValidate', req.session.passport.user)
     // Successful authentication, redirect home.
     res.redirect('https://wisdomofdecrowd.com')

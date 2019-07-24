@@ -10,7 +10,7 @@ const { ObjectId } = mongoose.Types
 export default {
   Query: {
     me: (root, args, { req }, info) => {
-      return User.findById(req.session.userId)
+      return User.findById(req.session.userId ? req.session.userId : req.session.passport.user.userId )
     },
     users: (root, args, { req }, info) => {
       const users = User.find({})
@@ -73,7 +73,7 @@ export default {
     },
     follow: async (root, args, { req, res }, info) => {
       const userToFollow = await User.findById(args.id)
-      const myUser = await User.findById(req.session.userId)
+      const myUser = await User.findById(req.session.userId ? req.session.userId : req.session.passport.user.userId)
 
       if (!userToFollow) {
         return new UserInputError(`Can't really find who u are talking about`)

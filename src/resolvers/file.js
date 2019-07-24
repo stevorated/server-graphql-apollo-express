@@ -26,7 +26,7 @@ export default {
       return processUpload(
         args,
         'avatar',
-        req.session.userId)
+        req.session.userId ? req.session.userId : req.session.passport.user.userId)
     }
   },
   File: {

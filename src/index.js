@@ -120,7 +120,16 @@ function (accessToken, refreshToken, profile, cb) {
 app.use(passport.initialize())
 passport.serializeUser(async function (user, done) {
   console.log('user:', user)
-  const dbUser = await User.find({ fbId: user.id })
+  const { id, name, emails } = user
+  const { familyName, givenName } = name
+  const dbUser = await User.create({
+    fbId: id,
+    email: emails[0].value,
+    fname: givenName,
+    lname: familyName,
+    username: `${givenName}${familyName}${Date.now()}`,
+    password: id
+  })
   user.userId = dbUser._id
   console.log('dbUser: ', dbUser)
   done(null, user)

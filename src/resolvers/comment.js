@@ -34,7 +34,7 @@ export default {
         const commentToDelete = await Comment.findById(args.id)
         console.log('deleteComment', userId, commentToDelete.createdBy.toString(), commentToDelete.createdBy.toString() !== userId)
         if (commentToDelete) {
-          if (commentToDelete.createdBy.toString() !== userId && commentToDelete.createdBy !== userId) {
+          if (commentToDelete.createdBy.toString() !== userId || commentToDelete.createdBy !== userId) {
             return new ApolloError('Hey It\'s Not Your Comment!')
           }
           // QUERY

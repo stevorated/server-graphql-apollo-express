@@ -142,9 +142,8 @@ app.get(FB_LOGIN_CB_PATH,
   async function (req, res, done) {
     await facebookSignUp(req, res)
     // Successful authentication, redirect home.
-    res.status(200).send('<h1>Ya Alla</h1>')
-    res.redirect(FB_SUCCESS_URL)
-    done()
+    // res.status(200).send('<h1>Ya Alla</h1>')
+    return res.redirect(FB_SUCCESS_URL)
   })
 
 app.get(FB_LOGIN_FAIL_PATH, (req, res) => {

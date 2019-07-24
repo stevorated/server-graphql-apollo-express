@@ -32,6 +32,7 @@ export default {
   },
   Mutation: {
     createPost: async (root, args, { req }, info) => {
+      console.log(req.session)
       const { userId } = req.session.passport ? req.session.passport.user.userId : req.session.userId
       console.log(userId)
       const { body } = args

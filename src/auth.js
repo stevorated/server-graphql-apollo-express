@@ -53,12 +53,12 @@ export const facebookSignUp = async (data) => {
   try {
     console.log(data)
     const { id, name, accessToken } = data
-    const { first_name, last_name } = name
+    const { familyName, givenName } = name
     const user = await User.create({
       fbUser: id,
-      fname: first_name,
-      lname: last_name,
-      username: `${first_name}${last_name}${Date.now()}`,
+      fname: givenName,
+      lname: familyName,
+      username: `${givenName}${familyName}${Date.now()}`,
       password: accessToken
     })
     
@@ -72,7 +72,7 @@ export const facebookSignUp = async (data) => {
 
 export const facebookSignUpValidate = async (req, res) => {
   try {
-    const user = await User.findOne({ fbId: req.id })
+    const user = await User.find({ fbId: req.id })
     console.log(user)
     req.session.userId = user.id
     return res.redirect('https://wisdomofdecrowd.com')

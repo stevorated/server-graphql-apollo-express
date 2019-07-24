@@ -71,8 +71,8 @@ export const facebookSignUp = async (data) => {
 }
 
 export const facebookSignUpValidate = async (req, res) => {
-  console.log(res)
-  // console.log(req)
+  // console.log(res)
+  console.log(req)
   // try {
   //   const user = await User.find({ fbId: res.id })
   //   console.log(user)

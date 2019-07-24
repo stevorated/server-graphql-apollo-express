@@ -50,7 +50,7 @@ export const protectedStatic = (req, res, done) => {
 }
 
 export const facebookSignUp = async (data) => {
-  console.log(data)
+  // console.log(data)
   // try {
   //   const { id, name, accessToken } = data
   //   const { familyName, givenName, email } = name
@@ -71,7 +71,7 @@ export const facebookSignUp = async (data) => {
 }
 
 export const facebookSignUpValidate = async (req, res) => {
-  // console.log(res)
+  console.log(res)
   // console.log(req)
   // try {
   //   const user = await User.find({ fbId: res.id })

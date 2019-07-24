@@ -118,7 +118,7 @@ function (accessToken, refreshToken, profile, cb) {
 }))
 app.use(passport.initialize())
 passport.serializeUser(function (user, done) {
-  // console.log(user)
+  console.log(user)
   done(null, user)
 })
 app.get(FB_LOGIN_PATH,

@@ -10,6 +10,7 @@ const { ObjectId } = mongoose.Types
 export default {
   Query: {
     me: (root, args, { req }, info) => {
+      console.log('me')
       return User.findById(req.session.userId ? req.session.userId : req.session.passport.user.userId )
     },
     users: (root, args, { req }, info) => {

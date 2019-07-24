@@ -42,7 +42,9 @@ export const signOut = (req, res) => new Promise((resolve, reject) => {
 })
 
 export const protectedStatic = (req, res, done) => {
-  if (!req.session.userId) {
+  const session = req.session.passport ? req.session.passport.user : req.session
+  const { userId } = session
+  if (!userId) {
     res.status(403).send({ error: 'u must be logged in for that' })
   } else {
     done()

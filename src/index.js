@@ -116,15 +116,20 @@ app.use(passport.initialize())
 passport.serializeUser(async function (user, done) {
   const { id, name, emails } = user
   const { familyName, givenName } = name
-  const dbUser = await User.create({
-    fbId: id,
-    email: emails[0].value,
-    fname: givenName,
-    lname: familyName,
-    username: `${givenName}${familyName}${Date.now()}`,
-    password: id
-  })
-  user.userId = dbUser._id
+  const userExists = await User.findOne({ fbId: id })
+  if (!userExists) {
+    const dbUser = await User.create({
+      fbId: id,
+      email: emails[0].value,
+      fname: givenName,
+      lname: familyName,
+      username: `${givenName}${familyName}${Date.now()}`,
+      password: id
+    })
+    user.userId = dbUser._id
+  } else {
+    user.userId = userExists._id
+  }
   done(null, user)
 })
 app.get(FB_LOGIN_PATH,

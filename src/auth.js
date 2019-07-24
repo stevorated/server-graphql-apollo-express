@@ -20,7 +20,7 @@ export const signedIn = req => {
   console.log('req.session.user._json: =>')
   console.log(req.session.passport.user.userId)
 
-  return req.session.userId || req.session.passport.user.userId
+  return req.session.userId || req.session.passport.user.userId || undefined
 }
 
 export const ensureSignedIn = req => {

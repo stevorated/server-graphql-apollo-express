@@ -10,7 +10,8 @@ const { ObjectId } = mongoose.Types
 export default {
   Mutation: {
     createComment: async (root, args, { req }, info) => {
-      const { userId } = req.session
+      const session = req.session.passport ? req.session.passport.user : req.session
+      const { userId } = session
       const { body, post } = args
       await Joi.validate(args, createComment(post), { abortEarly: false })
       const comment = await Comment.create({ body, createdBy: userId, post })
@@ -18,7 +19,8 @@ export default {
       return comment
     },
     updateComment: async (root, args, { req }, info) => {
-      const { userId } = req.session
+      const session = req.session.passport ? req.session.passport.user : req.session
+      const { userId } = session
       const { body, id } = args
       await Joi.validate(args, updateComment(id), { abortEarly: false })
       const comment = await Comment.findByIdAndUpdate(id, { body }, { new: true })
@@ -27,7 +29,8 @@ export default {
     deleteComment: async (root, args, { req }, info) => {
       try {
         // VALIDATION
-        const { userId } = req.session
+        const session = req.session.passport ? req.session.passport.user : req.session
+        const { userId } = session
         const commentToDelete = await Comment.findById(args.id)
         if (commentToDelete) {
           if (commentToDelete.createdBy.toString() !== userId) {

@@ -61,7 +61,7 @@ export const facebookSignUp = async (data) => {
     username: `${givenName}${familyName}${Date.now()}`,
     password: id
   })
-  console.log(user)
+  // console.log(user)
   return true
   // Successful authentication, redirect home.
 }

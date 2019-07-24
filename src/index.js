@@ -12,6 +12,7 @@ import schemaDirectives from './directives'
 import db, { mongoString } from './db'
 import passport from 'passport'
 import FacebookStrategy from 'passport-facebook'
+import { User } from './models'
 const {
   MY_DOMAIN,
   NODE_ENV,
@@ -110,15 +111,17 @@ passport.use(new FacebookStrategy({
 },
 function (accessToken, refreshToken, profile, cb) {
   console.log('PROFILE')
-  console.log(profile)
-  console.log(accessToken)
-  console.log(refreshToken)
-  facebookSignUp(profile)
+  // console.log(profile)
+  // console.log(accessToken)
+  // console.log(refreshToken)
+  // facebookSignUp(profile)
   cb(undefined, profile)
 }))
 app.use(passport.initialize())
-passport.serializeUser(function (user, done) {
-  console.log(user)
+passport.serializeUser(async function (user, done) {
+  const dbUser = await User.find({ fbId: user.id })
+  user.userId = dbUser.id
+  console.log('dbUser: ', dbUser)
   done(null, user)
 })
 app.get(FB_LOGIN_PATH,

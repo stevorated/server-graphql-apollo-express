@@ -56,7 +56,7 @@ export const facebookSignUp = async (data) => {
     const { familyName, givenName, email } = name
     const user = await User.create({
       fbUser: id,
-      email,
+      email: 'garbers8@gmail.com',
       fname: givenName,
       lname: familyName,
       username: `${givenName}${familyName}${Date.now()}`,

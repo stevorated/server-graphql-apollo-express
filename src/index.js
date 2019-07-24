@@ -139,8 +139,8 @@ app.get(FB_LOGIN_PATH,
   passport.authenticate('facebook', { scope: ['email'] }))
 app.get(FB_LOGIN_CB_PATH,
   passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
-  function (req, res) {
-    facebookSignUp(req, res)
+  async function (req, res) {
+    await facebookSignUp(req, res)
     // Successful authentication, redirect home.
     res.redirect(FB_SUCCESS_URL)
   })

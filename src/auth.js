@@ -52,16 +52,7 @@ export const protectedStatic = (req, res, done) => {
 
 export const facebookSignUp = async (data) => {
   console.log(data)
-  const { id, name, emails } = data
-  const { familyName, givenName } = name
-  const user = await User.create({
-    fbId: id,
-    email: emails[0].value,
-    fname: givenName,
-    lname: familyName,
-    username: `${givenName}${familyName}${Date.now()}`,
-    password: id
-  })
+  
   // console.log(user)
   return true
   // Successful authentication, redirect home.

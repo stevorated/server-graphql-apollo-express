@@ -35,32 +35,7 @@ console.log('Production: ', IN_PROD)
 const assetsDir = path.join(__dirname, '..', ASSETS_DIR)
 
 const app = express()
-// ================================================ FB LOGIN ==============================
-passport.use(new FacebookStrategy({
-  clientID: APP_ID,
-  clientSecret: APP_SECRET,
-  callbackURL: `${MY_PUBLIC_DOMAIN}${FB_LOGIN_CB_PATH}`,
-  profileFields: ['id', 'name', 'email']
-},
-function (accessToken, refreshToken, profile, cb) {
-  const { id, name } = profile
-  facebookSignUp({ accessToken, id, name })
-  cb(undefined, profile)
-}))
-app.use(passport.initialize())
-passport.serializeUser(function (user, done) {
-  done(null, user)
-})
-app.get(FB_LOGIN_PATH,
-  passport.authenticate('facebook'))
-app.get(FB_LOGIN_CB_PATH,
-  passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
-  function (req, res) {
-    facebookSignUpValidate(req, res)
-    // Successful authentication, redirect home.
-    // res.send('auth GOOD!')
-  })
-// ==================================== END FB LOGIN =====================================
+
 app.use(cookieParser(SESSION_NAME))
 app.disable('x-powered-by')
 const MongoSessionStore = mongoDBStore(session)
@@ -125,6 +100,33 @@ app.use(helmet())
 app.get('/api', (req, res) => {
   res.status(200).send('Ya Alla!!!!!!')
 })
+
+// ================================================ FB LOGIN ==============================
+passport.use(new FacebookStrategy({
+  clientID: APP_ID,
+  clientSecret: APP_SECRET,
+  callbackURL: `${MY_PUBLIC_DOMAIN}${FB_LOGIN_CB_PATH}`,
+  profileFields: ['id', 'name', 'email']
+},
+function (accessToken, refreshToken, profile, cb) {
+  const { id, name } = profile
+  facebookSignUp({ accessToken, id, name })
+  cb(undefined, profile)
+}))
+app.use(passport.initialize())
+passport.serializeUser(function (user, done) {
+  done(null, user)
+})
+app.get(FB_LOGIN_PATH,
+  passport.authenticate('facebook'))
+app.get(FB_LOGIN_CB_PATH,
+  passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
+  function (req, res) {
+    facebookSignUpValidate(req, res)
+    // Successful authentication, redirect home.
+    // res.send('auth GOOD!')
+  })
+// ==================================== END FB LOGIN =====================================
 
 app.listen({ port: APP_PORT }, async () => {
   await db()

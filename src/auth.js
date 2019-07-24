@@ -57,14 +57,14 @@ export const facebookSignUp = async (data) => {
       fbUser: id,
       fname: first_name,
       lname: last_name,
-      username: `${first_name}_${last_name}${Date.now()}`,
+      username: `${first_name}${last_name}${Date.now()}`,
       password: authToken
     })
     
     return true
     // Successful authentication, redirect home.
   } catch (err) {
-    throw new Error('something went wrong')
+    console.log(err)
   }
 
 }

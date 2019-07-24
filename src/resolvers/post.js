@@ -32,7 +32,7 @@ export default {
   },
   Mutation: {
     createPost: async (root, args, { req }, info) => {
-      const { userId } = req.session
+      const { userId } = req.session.passport ? req.session.passport.user.userId : req.session.userId
       const { body } = args
       // VALIDATION
       await Joi.validate(args, createPost(userId), { abortEarly: false })
@@ -42,7 +42,7 @@ export default {
       return post
     },
     updatePost: async (root, args, { req }, info) => {
-      const { userId } = req.session
+      const { userId } = req.session.passport ? req.session.passport.user.userId : req.session.userId
       const { body, createdBy } = args
       await Joi.validate({ body, createdBy }, updatePost(createdBy), { abortEarly: false })
       const post = await Post.findByIdAndUpdate(createdBy, { body }, { new: true })
@@ -54,7 +54,7 @@ export default {
         const postToDeleteExists = await Post.findById(post)
         if (postToDeleteExists) {
           const postOwner = await User.findById(postToDeleteExists.createdBy)
-          if (postOwner.id !== req.session.userId ? req.session.userId : req.session.passport.user.userId) {
+          if (postOwner.id !== req.session.passport ? req.session.passport.user.userId : req.session.userId) {
             return new UserInputError('Hey It\'s Not Your Post!')
           }
           // QUERY

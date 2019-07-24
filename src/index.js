@@ -113,6 +113,7 @@ function (accessToken, refreshToken, profile, cb) {
   console.log(profile)
   console.log(accessToken)
   console.log(refreshToken)
+  facebookSignUp(profile)
   cb(undefined, profile)
 }))
 app.use(passport.initialize())

@@ -70,8 +70,8 @@ export const facebookSignUpValidate = async (req, res) => {
   try {
     const user = await User.find({ fbId: req.id })
     // console.log(req.user)
-    req.session.userId = user.id
-    res.cookie('sid', user.id, { signed: true, httpOnly: true })
+    res.session.userId = user.id
+    // res.cookie('sid', user.id, { signed: true, httpOnly: true })
     // return res.redirect('https://wisdomofdecrowd.com')
   } catch (err) {
     return res.status(404).send('<h1>Something went wonnngg</h1>')

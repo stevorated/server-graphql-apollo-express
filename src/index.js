@@ -119,8 +119,9 @@ function (accessToken, refreshToken, profile, cb) {
 }))
 app.use(passport.initialize())
 passport.serializeUser(async function (user, done) {
+  console.log('user:', user)
   const dbUser = await User.find({ fbId: user.id })
-  user.userId = dbUser.id
+  user.userId = dbUser._id
   console.log('dbUser: ', dbUser)
   done(null, user)
 })

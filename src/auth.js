@@ -51,24 +51,19 @@ export const protectedStatic = (req, res, done) => {
 
 export const facebookSignUp = async (data) => {
   console.log(data)
-  try {
-    const { id, name, accessToken } = data
-    const { familyName, givenName, email } = name
-    const user = await User.create({
-      fbUser: id,
-      email: 'garbers8@gmail.com',
-      fname: givenName,
-      lname: familyName,
-      username: `${givenName}${familyName}${Date.now()}`,
-      password: accessToken
-    })
-    
-    return true
-    // Successful authentication, redirect home.
-  } catch (err) {
-    console.log(err)
-  }
-
+  const { id, name, accessToken } = data
+  const { familyName, givenName, email } = name
+  const user = await User.create({
+    fbUser: id,
+    email: 'garbers8@gmail.com',
+    fname: givenName,
+    lname: familyName,
+    username: `${givenName}${familyName}${Date.now()}`,
+    password: accessToken
+  })
+  console.log(user)
+  return true
+  // Successful authentication, redirect home.
 }
 
 export const facebookSignUpValidate = async (req, res) => {

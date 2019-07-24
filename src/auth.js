@@ -17,8 +17,8 @@ export const attmeptSignIn = async (email, password) => {
 }
 
 export const signedIn = req => {
-  return req.session.userId
-
+  if (req.session.passport.user.id) return User.find({ fbId: req.session.passport.user.id }).id
+  return req.session.userId || req.session.passport.user.id
 }
 
 export const ensureSignedIn = req => {

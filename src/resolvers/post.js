@@ -45,7 +45,8 @@ export default {
       return post
     },
     updatePost: async (root, args, { req }, info) => {
-      const { userId } = req.session.passport ? req.session.passport.user.userId : req.session.userId
+      const session = req.session.passport ? req.session.passport.user : req.session
+      const { userId } = session
       const { body, createdBy } = args
       await Joi.validate({ body, createdBy }, updatePost(createdBy), { abortEarly: false })
       const post = await Post.findByIdAndUpdate(createdBy, { body }, { new: true })
@@ -73,7 +74,8 @@ export default {
       }
     },
     likePost: async (root, args, { req }, info) => {
-      const { userId } = req.session
+      const session = req.session.passport ? req.session.passport.user : req.session
+      const { userId } = session
       const likePost = await Post.findById(args.id)
       if (!likePost) {
         return new UserInputError('Something went wrong!')

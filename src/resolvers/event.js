@@ -22,14 +22,18 @@ const { ObjectId } = mongoose.Types
 export default {
   Query: {
     getMyEvents: async (root, { limit = 6, skip = 0, sort = 1 }, { req }, info) => {
+      const session = req.session.passport ? req.session.passport.user : req.session
+      const { userId } = session
       if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`)
-      if (!ObjectId.isValid(req.session.userId ? req.session.userId : req.session.passport.user.userId)) throw new UserInputError(`invalid ID`)
-      return Event.find({ createdBy: ObjectId(req.session.userId ? req.session.userId : req.session.passport.user.userId), startDate: { $gte: moment().format('YYYY-MM-DD') } }, null, { sort: { startDate: sort }, limit, skip })
+      if (!ObjectId.isValid(userId)) throw new UserInputError(`invalid ID`)
+      return Event.find({ createdBy: ObjectId(userId), startDate: { $gte: moment().format('YYYY-MM-DD') } }, null, { sort: { startDate: sort }, limit, skip })
     },
     getMyEventsFeed: async (root, { limit = 6, skip = 0, sort = 1 }, { req }, info) => {
+      const session = req.session.passport ? req.session.passport.user : req.session
+      const { userId } = session
       if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`)
-      if (!ObjectId.isValid(req.session.userId ? req.session.userId : req.session.passport.user.userId)) throw new UserInputError(`invalid ID`)
-      return Event.find({ createdBy: ObjectId(req.session.userId ? req.session.userId : req.session.passport.user.userId) }, null, { sort: { createdAt: sort }, limit, skip })
+      if (!ObjectId.isValid(userId)) throw new UserInputError(`invalid ID`)
+      return Event.find({ createdBy: ObjectId(userId) }, null, { sort: { createdAt: sort }, limit, skip })
     },
     getEvents: async (root, { id, limit = 6, skip = 0, sort = 1 }, { req }, info) => {
       if (id && !ObjectId.isValid(id)) throw new UserInputError(`invalid ID`)
@@ -51,7 +55,8 @@ export default {
   },
   Mutation: {
     createEvent: async (root, args, { req }, info) => {
-      const { userId } = req.session
+      const session = req.session.passport ? req.session.passport.user : req.session
+      const { userId } = session
       const {
         image,
         createdBy,

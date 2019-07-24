@@ -28,7 +28,8 @@ const {
   MY_PUBLIC_DOMAIN,
   FB_LOGIN_PATH,
   FB_LOGIN_CB_PATH,
-  FB_LOGIN_FAIL_PATH
+  FB_LOGIN_FAIL_PATH,
+  FB_SUCCESS_URL
 } = process.env
 
 const IN_PROD = NODE_ENV === 'production'
@@ -126,7 +127,9 @@ passport.serializeUser(async function (user, done) {
       username: `${givenName}${familyName}${Date.now()}`,
       password: id
     })
-    user.userId = dbUser._id
+    if (dbUser) {
+      user.userId = dbUser._id
+    }
   } else {
     user.userId = userExists._id
   }
@@ -139,8 +142,12 @@ app.get(FB_LOGIN_CB_PATH,
   function (req, res) {
     facebookSignUp(req, res)
     // Successful authentication, redirect home.
-    res.redirect('https://wisdomofdecrowd.com')
+    res.redirect(FB_SUCCESS_URL)
   })
+
+app.get(FB_LOGIN_FAIL_PATH, (req, res) => {
+  res.redirect(MY_DOMAIN)
+})
 // ==================================== END FB LOGIN =====================================
 
 app.listen({ port: APP_PORT }, async () => {

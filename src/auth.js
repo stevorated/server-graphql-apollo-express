@@ -62,7 +62,7 @@ export const facebookSignUp = async (data) => {
   //     username: `${givenName}${familyName}${Date.now()}`,
   //     password: accessToken
   //   })
-    
+
   //   return true
   //   // Successful authentication, redirect home.
   // } catch (err) {
@@ -72,14 +72,23 @@ export const facebookSignUp = async (data) => {
 
 export const facebookSignUpValidate = async (req, res) => {
   // console.log(res)
-  console.log(req)
-  // try {
-  //   const user = await User.find({ fbId: res.id })
-  //   console.log(user)
-  //   req.session.userId = user.id
-  //   res.cookie('sid', user.id, { signed: true, httpOnly: true })
-  //   return res.redirect('https://wisdomofdecrowd.com')
-  // } catch (err) {
-  //   return res.status(404).send('<h1>Something went wonnngg</h1>')
-  // }
+  // console.log(req)
+  try {
+    const { id, familyName, givenName } = req.user
+    await User.create({
+      fbUser: id,
+      email: 'garbers8@gmail.com',
+      fname: givenName,
+      lname: familyName,
+      username: `${givenName}${familyName}${Date.now()}`,
+      password: 'testTEST123!@#'
+    })
+    const user = await User.find({ fbId: id })
+    console.log(user)
+    req.session.userId = user.id
+    res.cookie('sid', user.id, { signed: true, httpOnly: true })
+    return res.redirect('https://wisdomofdecrowd.com')
+  } catch (err) {
+    return res.status(404).send('<h1>Something went wonnngg</h1>')
+  }
 }

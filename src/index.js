@@ -142,7 +142,9 @@ app.get(FB_LOGIN_CB_PATH,
   async function (req, res) {
     await facebookSignUp(req, res)
     // Successful authentication, redirect home.
-    res.redirect(FB_SUCCESS_URL)
+    setTimeout(() => {
+      res.redirect(FB_SUCCESS_URL)
+    }, 1000)
   })
 
 app.get(FB_LOGIN_FAIL_PATH, (req, res) => {
@@ -155,4 +157,3 @@ app.listen({ port: APP_PORT }, async () => {
   console.log(`🚀 Server ready at ${MY_DOMAIN}:${APP_PORT}${server.graphqlPath}`)
 }
 )
-

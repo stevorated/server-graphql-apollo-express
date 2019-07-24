@@ -109,14 +109,16 @@ passport.use(new FacebookStrategy({
   profileFields: ['id', 'name', 'email']
 },
 function (accessToken, refreshToken, profile, cb) {
+  
   cb(undefined, profile)
 }))
 app.use(passport.initialize())
 passport.serializeUser(function (user, done) {
+  console.log(user)
   done(null, user)
 })
 app.get(FB_LOGIN_PATH,
-  passport.authenticate('facebook'))
+  passport.authenticate('facebook', { scope: ['email', 'default'] }))
 app.get(FB_LOGIN_CB_PATH,
   passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
   function (req, res) {

@@ -69,7 +69,7 @@ export const facebookSignUp = async (data) => {
 export const facebookSignUpValidate = async (req, res) => {
   try {
     // const user = await User.find({ fbId: req.id })
-    console.log(req.user)
+    // console.log(req.user)
     // req.session.userId = user.id
     // return res.redirect('https://wisdomofdecrowd.com')
   } catch (err) {

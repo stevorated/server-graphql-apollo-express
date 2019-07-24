@@ -127,7 +127,7 @@ app.get(FB_LOGIN_CB_PATH,
   function (req, res) {
     facebookSignUpValidate(req, res) 
     // Successful authentication, redirect home.
-    res.send('auth GOOD!')
+    res.redirect('https://wisdomofdecrowd.com')
   })
 // ==================================== END FB LOGIN =====================================
 

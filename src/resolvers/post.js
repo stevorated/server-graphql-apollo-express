@@ -33,6 +33,7 @@ export default {
   Mutation: {
     createPost: async (root, args, { req }, info) => {
       const { userId } = req.session.passport ? req.session.passport.user.userId : req.session.userId
+      console.log(userId)
       const { body } = args
       // VALIDATION
       await Joi.validate(args, createPost(userId), { abortEarly: false })

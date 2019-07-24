@@ -51,34 +51,35 @@ export const protectedStatic = (req, res, done) => {
 
 export const facebookSignUp = async (data) => {
   console.log(data)
-  try {
-    const { id, name, accessToken } = data
-    const { familyName, givenName, email } = name
-    const user = await User.create({
-      fbUser: id,
-      email: 'garbers8@gmail.com',
-      fname: givenName,
-      lname: familyName,
-      username: `${givenName}${familyName}${Date.now()}`,
-      password: accessToken
-    })
+  // try {
+  //   const { id, name, accessToken } = data
+  //   const { familyName, givenName, email } = name
+  //   const user = await User.create({
+  //     fbUser: id,
+  //     email: 'garbers8@gmail.com',
+  //     fname: givenName,
+  //     lname: familyName,
+  //     username: `${givenName}${familyName}${Date.now()}`,
+  //     password: accessToken
+  //   })
     
-    return true
-    // Successful authentication, redirect home.
-  } catch (err) {
-    console.log(err)
-  }
-
+  //   return true
+  //   // Successful authentication, redirect home.
+  // } catch (err) {
+  //   console.log(err)
+  // }
 }
 
 export const facebookSignUpValidate = async (req, res) => {
-  try {
-    const user = await User.find({ fbId: req.id })
-    console.log(user)
-    req.session.userId = user.id
-    res.cookie('sid', user.id, { signed: true, httpOnly: true })
-    return res.redirect('https://wisdomofdecrowd.com')
-  } catch (err) {
-    return res.status(404).send('<h1>Something went wonnngg</h1>')
-  }
+  console.log(res)
+  console.log(req)
+  // try {
+  //   const user = await User.find({ fbId: res.id })
+  //   console.log(user)
+  //   req.session.userId = user.id
+  //   res.cookie('sid', user.id, { signed: true, httpOnly: true })
+  //   return res.redirect('https://wisdomofdecrowd.com')
+  // } catch (err) {
+  //   return res.status(404).send('<h1>Something went wonnngg</h1>')
+  // }
 }

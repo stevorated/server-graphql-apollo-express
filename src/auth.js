@@ -72,18 +72,18 @@ export const facebookSignUp = async (data) => {
 
 export const facebookSignUpValidate = async (req, res) => {
   // console.log(res)
-  // console.log(req)
+  console.log(req.user)
   try {
-    const { id, familyName, givenName } = req.user
-    await User.create({
-      fbUser: id,
-      email: 'garbers8@gmail.com',
-      fname: givenName,
-      lname: familyName,
-      username: `${givenName}${familyName}${Date.now()}`,
-      password: 'testTEST123!@#'
-    })
-    const user = await User.find({ fbId: id })
+    // const { id, familyName, givenName } = req.user
+    // await User.create({
+    //   fbUser: id,
+    //   email: 'garbers8@gmail.com',
+    //   fname: givenName,
+    //   lname: familyName,
+    //   username: `${givenName}${familyName}${Date.now()}`,
+    //   password: 'testTEST123!@#'
+    // })
+    // const user = await User.find({ fbId: id })
     // console.log(user)
     // req.session.userId = user.id
     // res.cookie('sid', user.id, { signed: true, httpOnly: true })

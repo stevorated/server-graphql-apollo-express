@@ -126,7 +126,8 @@ app.get(FB_LOGIN_PATH,
 app.get(FB_LOGIN_CB_PATH,
   passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
   function (req, res) {
-    facebookSignUpValidate(req, res) 
+    facebookSignUpValidate(req, res)
+    console.log(req.session)
     // Successful authentication, redirect home.
     res.redirect('https://wisdomofdecrowd.com')
   })

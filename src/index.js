@@ -114,6 +114,7 @@ passport.use(new FacebookStrategy({
   profileFields: ['id', 'name', 'email', 'picture']
 },
 async (accessToken, refreshToken, profile, cb) => {
+  console.log('======= refresh token ===========', refreshToken)
   console.log(profile._json)
   const { id, email, picture } = profile._json
   const givenName = profile.first_name

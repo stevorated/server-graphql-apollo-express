@@ -138,8 +138,6 @@ app.get(FB_LOGIN_CB_PATH,
   passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
   async function (req, res, done) {
     // Successful authentication, redirect home.
-    console.log('success')
-    console.log(req.session.passport)
     return res.redirect(302, FB_SUCCESS_URL)
   })
 

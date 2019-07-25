@@ -163,6 +163,7 @@ app.get(FB_LOGIN_CB_PATH,
   async function (req, res, done) {
     // Successful authentication, redirect home.
     console.log('success')
+    console.log(req.session.passport)
     return res.redirect(302, FB_SUCCESS_URL)
   })
 

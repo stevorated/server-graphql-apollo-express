@@ -111,7 +111,7 @@ passport.use(new FacebookStrategy({
   clientID: APP_ID,
   clientSecret: APP_SECRET,
   callbackURL: `${MY_PUBLIC_DOMAIN}${FB_LOGIN_CB_PATH}`,
-  profileFields: ['id', 'name', 'email', 'first_name', 'last_name', 'picture']
+  profileFields: ['id', 'name', 'email', 'picture']
 },
 async (accessToken, refreshToken, profile, cb) => {
   const { id, name, emails, picture } = profile

@@ -7,7 +7,7 @@ import mongoDBStore from 'connect-mongodb-session'
 import helmet from 'helmet'
 import typeDefs from './typeDefs'
 import resolvers from './resolvers'
-import { protectedStatic, facebookSignUp } from './auth'
+import { protectedStatic, createFacebookUser } from './auth'
 import schemaDirectives from './directives'
 import db, { mongoString } from './db'
 import passport from 'passport'
@@ -82,7 +82,7 @@ const server = new ApolloServer({
       }
     }, // TODO: remember to block playground in prod
   uploads: {
-    maxFieldSize: 2000000,
+    maxFieldSize: 4000000,
     maxFiles: 10
   },
   context: ({ req, res }) => ({ req, res })
@@ -111,34 +111,10 @@ passport.use(new FacebookStrategy({
   clientID: APP_ID,
   clientSecret: APP_SECRET,
   callbackURL: `${MY_PUBLIC_DOMAIN}${FB_LOGIN_CB_PATH}`,
-  profileFields: ['id', 'name', 'email', 'picture']
+  profileFields: ['id', 'name', 'email']
 },
-async (accessToken, refreshToken, profile, cb) => {
-  console.log(profile._json)
-  const { id, email, picture } = profile._json
-  const givenName = profile.first_name
-  const familyName = profile.last_name
-  const userExists = await User.findOne({ fbId: id })
-  // console.log(' ====================================== picture:', picture)
-  if (!userExists) {
-    const dbUser = await User.create({
-      fbId: id,
-      email: email.value,
-      fname: givenName,
-      lname: familyName,
-      username: `${givenName}${familyName}${Date.now()}`,
-      password: id
-    })
-    if (dbUser) {
-      dbUser.token = accessToken
-      cb(undefined, dbUser)
-    }
-  } else {
-    userExists.token = accessToken
-    cb(undefined, userExists)
-  }
-  // cb(undefined, profile)
-}))
+async (accessToken, refreshToken, profile, cb) => createFacebookUser(accessToken, refreshToken, profile, cb)
+))
 
 app.use(passport.initialize())
 

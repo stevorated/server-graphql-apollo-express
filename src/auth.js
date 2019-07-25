@@ -51,14 +51,26 @@ export const protectedStatic = (req, res, done) => {
   }
 }
 
-export const facebookSignUp = async (req, res) => {
-  try {
-    // const user = await User.find({ fbId: req.id })
-    // console.log(req.user)
-    // req.session.userId = user.id
-    // res.cookie('sid', user.id, { signed: true, httpOnly: true })
-    // return res.redirect('https://wisdomofdecrowd.com')
-  } catch (err) {
-    return res.status(404).send('<h1>Something went wonnngg</h1>')
+export const createFacebookUser = async (accessToken, refreshToken, profile, cb ) => {
+  const { id, email } = profile._json
+  const givenName = profile.first_name
+  const familyName = profile.last_name
+  const userExists = await User.findOne({ fbId: id })
+  if (!userExists) {
+    const dbUser = await User.create({
+      fbId: id,
+      email: email.value,
+      fname: givenName,
+      lname: familyName,
+      username: `${givenName}${familyName}${Date.now()}`,
+      password: id
+    })
+    if (dbUser) {
+      dbUser.token = accessToken
+      cb(undefined, dbUser)
+    }
+  } else {
+    userExists.token = accessToken
+    cb(undefined, userExists)
   }
 }

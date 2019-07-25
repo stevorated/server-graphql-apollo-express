@@ -13,6 +13,7 @@ import db, { mongoString } from './db'
 import passport from 'passport'
 import FacebookStrategy from 'passport-facebook'
 import { User } from './models'
+
 const {
   MY_DOMAIN,
   NODE_ENV,
@@ -34,6 +35,7 @@ const {
 
 const IN_PROD = NODE_ENV === 'production'
 console.log('Production: ', IN_PROD)
+
 const assetsDir = path.join(__dirname, '..', ASSETS_DIR)
 
 const app = express()
@@ -104,20 +106,18 @@ app.get('/api', (req, res) => {
 })
 
 // ================================================ FB LOGIN ==============================
+
 passport.use(new FacebookStrategy({
   clientID: APP_ID,
   clientSecret: APP_SECRET,
   callbackURL: `${MY_PUBLIC_DOMAIN}${FB_LOGIN_CB_PATH}`,
-  profileFields: ['id', 'name', 'email']
+  profileFields: ['id', 'name', 'email', 'first_name', 'last_name', 'picture']
 },
-function (accessToken, refreshToken, profile, cb) {
-  cb(undefined, profile)
-}))
-app.use(passport.initialize())
-passport.serializeUser(async function (user, done) {
-  const { id, name, emails } = user
+async (accessToken, refreshToken, profile, cb) => {
+  const { id, name, emails, picture } = profile
   const { familyName, givenName } = name
   const userExists = await User.findOne({ fbId: id })
+  console.log(' ====================================== picture:', picture)
   if (!userExists) {
     const dbUser = await User.create({
       fbId: id,
@@ -128,26 +128,44 @@ passport.serializeUser(async function (user, done) {
       password: id
     })
     if (dbUser) {
-      user.userId = dbUser._id
+      dbUser.token = accessToken
+      cb(undefined, dbUser)
     }
   } else {
-    user.userId = userExists._id
+    userExists.token = accessToken
+    cb(undefined, userExists)
   }
-  done(null, user)
+  // cb(undefined, profile)
+}))
+
+app.use(passport.initialize())
+
+passport.serializeUser(async (user, done) => {
+  console.log(' ======= serializeUser: ================ ', user)
+  const { _id, name, emails, token } = user
+  const { familyName, givenName } = name
+  done(null, {
+    // id,
+    userId: _id,
+    familyName,
+    givenName,
+    email: emails[0].value,
+    token
+  })
 })
+
 app.get(FB_LOGIN_PATH,
   passport.authenticate('facebook', { scope: ['email'] }))
+
 app.get(FB_LOGIN_CB_PATH,
   passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
   async function (req, res, done) {
-    await facebookSignUp(req, res)
     // Successful authentication, redirect home.
-    // res.status(200).send('<h1>Ya Alla</h1>')
     return res.redirect(FB_SUCCESS_URL)
   })
 
 app.get(FB_LOGIN_FAIL_PATH, (req, res) => {
-  res.redirect(MY_DOMAIN)
+  return res.redirect(MY_DOMAIN)
 })
 // ==================================== END FB LOGIN =====================================
 

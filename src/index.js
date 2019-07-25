@@ -162,11 +162,11 @@ app.get(FB_LOGIN_CB_PATH,
   passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
   async function (req, res, done) {
     // Successful authentication, redirect home.
-    return res.status(302).redirect(FB_SUCCESS_URL)
+    return res.redirect(FB_SUCCESS_URL)
   })
 
 app.get(FB_LOGIN_FAIL_PATH, (req, res) => {
-  return res.status(302).redirect(MY_DOMAIN)
+  return res.redirect(MY_DOMAIN)
 })
 // ==================================== END FB LOGIN =====================================
 

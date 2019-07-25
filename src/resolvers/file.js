@@ -22,7 +22,6 @@ export default {
     singleUpload: async (root, args, { req }) => {
       const session = req.session.passport ? req.session.passport.user : req.session
       const { userId } = session
-      console.log(args)
       // const { file, size, height, width, x, y } = args
       // console.log({ aspect, height, width, unit, x, y })
       return processUpload(
@@ -43,6 +42,7 @@ const processUpload = async (upload, type, userId) => {
   const { x, y, width, height, scaleX, scaleY } = upload
 
   try {
+    console.log(upload)
     const sizeToNum = parseInt(upload.size.split(' ')[0])
     switch (type) {
       case 'avatar':

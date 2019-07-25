@@ -115,8 +115,8 @@ passport.use(new FacebookStrategy({
 },
 async (accessToken, refreshToken, profile, cb) => {
   const { id, emails, picture } = profile._json
-  const givenName = profile.first_name
-  const familyName = profile.last_name
+  const givenName = profile._json.first_name
+  const familyName = profile._json.last_name
   const userExists = await User.findOne({ fbId: id })
   console.log(' ====================================== picture:', picture)
   if (!userExists) {

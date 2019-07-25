@@ -115,15 +115,15 @@ passport.use(new FacebookStrategy({
 },
 async (accessToken, refreshToken, profile, cb) => {
   console.log(profile._json)
-  const { id, emails, picture } = profile._json
-  const givenName = profile._json.first_name
-  const familyName = profile._json.last_name
+  const { id, email, picture } = profile._json
+  const givenName = profile.first_name
+  const familyName = profile.last_name
   const userExists = await User.findOne({ fbId: id })
   console.log(' ====================================== picture:', picture)
   if (!userExists) {
     const dbUser = await User.create({
       fbId: id,
-      email: emails[0].value,
+      email: email.value,
       fname: givenName,
       lname: familyName,
       username: `${givenName}${familyName}${Date.now()}`,
@@ -144,14 +144,13 @@ app.use(passport.initialize())
 
 passport.serializeUser(async (user, done) => {
   console.log(' ======= serializeUser: ================ ', user)
-  const { _id, name, emails, token } = user
-  const { familyName, givenName } = name
+  const { _id, fname, lname, email, token } = user
   done(null, {
     // id,
     userId: _id,
-    familyName,
-    givenName,
-    email: emails[0].value,
+    fname,
+    lname,
+    email,
     token
   })
 })

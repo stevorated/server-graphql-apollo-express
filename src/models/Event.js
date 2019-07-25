@@ -102,7 +102,7 @@ const eventSchema = new mongoose.Schema({
 )
 
 eventSchema.pre('deleteOne', async function () {
-  console.log('removing')
+  // console.log('removing')
   const prev = this._conditions._id
   const notification = await Notification.create({
     from: prev.createdBy,

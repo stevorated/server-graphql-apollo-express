@@ -26,7 +26,7 @@ const commentSchema = new mongoose.Schema({
 )
 
 commentSchema.pre('deleteOne', async function () {
-  console.log('removing')
+  // console.log('removing')
   const prev = this._conditions._id
   await Notification.create({
     from: prev.createdBy,

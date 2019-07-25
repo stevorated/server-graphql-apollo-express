@@ -10,8 +10,8 @@ const { ObjectId } = mongoose.Types
 export default {
   Query: {
     me: (root, args, { req }, info) => {
-      // console.log('me')
-      return User.findById(req.session.userId ? req.session.userId : req.session.passport.user.userId )
+      console.log('me')
+      return User.findById(req.session.passport ? req.session.passport.user.userId : req.session.userId )
     },
     users: (root, args, { req }, info) => {
       const users = User.find({})

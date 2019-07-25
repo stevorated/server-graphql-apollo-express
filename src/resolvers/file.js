@@ -57,7 +57,7 @@ const processUpload = async (upload, type, userId) => {
         // console.log(user.avatar)
         const fileToDelete = await File.findByIdAndDelete(user.avatar)
         if (fileToDelete) {
-          unlink(fileToDelete.path, () => {})
+          unlink(fileToDelete.path, () => { })
         }
         // console.log(fileToDelete.path)
         const ext = filename.split('.')[1]
@@ -76,8 +76,8 @@ const processUpload = async (upload, type, userId) => {
         await Jimp.read(path.join(assetsDir, `${uniqueFilename}`))
           .then((image) => {
             return image
-            .crop(x * scaleX / 10000, y * scaleY / 10000, width * scaleX / 10000, height * scaleY / 10000)
-            .resize(75, 75) // resize
+              .crop(x * scaleX / 10000, y * scaleY / 10000, width * scaleX / 10000, height * scaleY / 10000)
+              .resize(75, 75) // resize
               // .sepia()
               // .quality(60) // set JPEG quality
               // .greyscale() // set greyscale

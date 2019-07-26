@@ -51,8 +51,7 @@ export const protectedStatic = (req, res, done) => {
   }
 }
 
-export const createFacebookUser = async (accessToken, refreshToken, profile, cb ) => {
-  console.log(profile)
+export const handleFacebookUser = async (accessToken, refreshToken, profile, cb ) => {
   const { id, name, emails } = profile
   const { familyName, givenName } = name
   const userExists = await User.findOne({ fbId: id })

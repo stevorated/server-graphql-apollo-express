@@ -7,7 +7,7 @@ import mongoDBStore from 'connect-mongodb-session'
 import helmet from 'helmet'
 import typeDefs from './typeDefs'
 import resolvers from './resolvers'
-import { protectedStatic, createFacebookUser } from './auth'
+import { protectedStatic, handleFacebookUser } from './auth'
 import schemaDirectives from './directives'
 import db, { mongoString } from './db'
 import passport from 'passport'
@@ -114,7 +114,7 @@ passport.use(new FacebookStrategy({
   callbackURL: `${MY_PUBLIC_DOMAIN}${FB_LOGIN_CB_PATH}`,
   profileFields: ['id', 'name', 'email']
 },
-async (accessToken, refreshToken, profile, cb) => createFacebookUser(accessToken, refreshToken, profile, cb)
+async (accessToken, refreshToken, profile, cb) => handleFacebookUser(accessToken, refreshToken, profile, cb)
 ))
 
 app.use(passport.initialize())

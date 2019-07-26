@@ -53,15 +53,16 @@ export const protectedStatic = (req, res, done) => {
 
 export const createFacebookUser = async (accessToken, refreshToken, profile, cb ) => {
   console.log(profile)
-  const { id, fname, lname, email } = profile
+  const { id, name, emails } = profile
+  const { familyName, givenName } = name
   const userExists = await User.findOne({ fbId: id })
   if (!userExists) {
     const dbUser = await User.create({
       fbId: id,
-      email,
-      fname,
-      lname,
-      username: `${fname}${lname}${Date.now()}`,
+      email: emails[0].value,
+      fname: givenName,
+      lname: familyName,
+      username: `${givenName}${familyName}${Date.now()}`,
       password: id
     })
     if (dbUser) {

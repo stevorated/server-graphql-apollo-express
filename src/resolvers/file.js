@@ -23,6 +23,7 @@ export default {
       console.log(args)
       const session = req.session.passport ? req.session.passport.user : req.session
       const { userId } = session
+      console.log(userId)
       // const { file, size, height, width, x, y } = args
       // console.log({ aspect, height, width, unit, x, y })
       return processUpload(

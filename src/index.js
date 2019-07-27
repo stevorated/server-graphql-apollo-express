@@ -58,11 +58,11 @@ app.use(session({
   secret: SESSION_SECRET,
   resave: true,
   httpOnly: IN_PROD,
-  rolling: false,
+  rolling: true,
   saveUninitialized: false,
   cookie: {
     maxAge: parseInt(SESSION_LIFE),
-    sameSite: false,
+    sameSite: true,
     secure: IN_PROD // TODO: bring back IN_PROD
   }
 }))
@@ -102,6 +102,7 @@ server.applyMiddleware({
 })
 
 app.use(helmet())
+
 app.get('/api', (req, res) => {
   res.status(200).send('Ya Alla!!!!!!')
 })

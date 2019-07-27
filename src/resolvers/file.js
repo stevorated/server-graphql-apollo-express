@@ -44,7 +44,6 @@ const processUpload = async (upload, type, userId) => {
   const { x, y, width, height, scaleX, scaleY } = upload
 
   try {
-    console.log(upload)
     const sizeToNum = parseInt(upload.size.split(' ')[0])
     switch (type) {
       case 'avatar':

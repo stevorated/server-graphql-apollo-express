@@ -63,7 +63,7 @@ app.use(session({
   cookie: {
     maxAge: parseInt(SESSION_LIFE),
     sameSite: true,
-    secure: false // TODO: bring back IN_PROD
+    secure: IN_PROD // TODO: bring back IN_PROD
   }
 }))
 
@@ -82,7 +82,7 @@ const server = new ApolloServer({
       }
     }, // TODO: remember to block playground in prod
   uploads: {
-    maxFieldSize: 4000000,
+    maxFieldSize: 10000000,
     maxFileSize: 10000000,
     maxFiles: 10
   },

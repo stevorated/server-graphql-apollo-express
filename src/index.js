@@ -56,13 +56,13 @@ app.use(session({
   store,
   name: SESSION_NAME,
   secret: SESSION_SECRET,
-  resave: true,
+  resave: false,
   httpOnly: IN_PROD,
-  rolling: true,
-  saveUninitialized: false,
+  rolling: false,
+  saveUninitialized: true,
   cookie: {
     maxAge: parseInt(SESSION_LIFE),
-    sameSite: true,
+    sameSite: false,
     secure: IN_PROD // TODO: bring back IN_PROD
   }
 }))

@@ -45,6 +45,7 @@ export default {
       await Joi.validate(args, signUp, { abortEarly: false })
       const user = await User.create(args)
       req.session.userId = user.id
+      req.session.save()
       return user
     },
     signIn: async (root, args, { req, res }, info) => {
@@ -52,7 +53,9 @@ export default {
       await Joi.validate(args, signIn, { abortEarly: false })
       const user = await attmeptSignIn(email, password)
       req.session.userId = user.id
-      res.cookie('sid', user.id, { signed: true, httpOnly: true }) // TODO: Change to header.cookie
+      req.session.save()
+      console.log(req.session)
+      res.cookie('sid', user.id, { signed: true, httpOnly: true, secure: true }) // TODO: Change to header.cookie
       return user
     },
     signOut: (root, args, { req, res }, info) => {

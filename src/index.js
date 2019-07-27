@@ -83,7 +83,7 @@ const server = new ApolloServer({
     }, // TODO: remember to block playground in prod
   uploads: {
     maxFieldSize: 4000000,
-    // maxFileSize: 100000000,
+    maxFileSize: 10000000,
     maxFiles: 10
   },
   context: ({ req, res }) => ({ req, res })

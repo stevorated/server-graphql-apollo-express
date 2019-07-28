@@ -18,8 +18,8 @@ export default {
     },
     getPosts: async (root, { id, limit = 10, skip = 0 }, { req }, info) => {
       // QUERY
-      console.log('ya alla')
-      if(!id) {
+
+      if (!id) {
         const posts = await Post.find({}, null, { sort: { createdAt: -1 }, limit, skip })
         return posts
       } else {
@@ -51,8 +51,8 @@ export default {
       return post
     },
     updatePost: async (root, args, { req }, info) => {
-      const session = req.session.passport ? req.session.passport.user : req.session
-      const { userId } = session
+      // const session = req.session.passport ? req.session.passport.user : req.session
+      // const { userId } = session
       const { body, createdBy } = args
       await Joi.validate({ body, createdBy }, updatePost(createdBy), { abortEarly: false })
       const post = await Post.findByIdAndUpdate(createdBy, { body }, { new: true })

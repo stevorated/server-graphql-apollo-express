@@ -98,7 +98,7 @@ const processUpload = async (upload, type, userId) => {
         break
     }
   } catch (error) {
-    console.log('ERRORRRR')
+    // console.log('ERRORRRR')
     return new ApolloError('something went wrong, try again later')
   }
 }

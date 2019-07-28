@@ -99,7 +99,7 @@ userSchema.methods.passwordMatch = function (password) {
 
 userSchema.post('save', async function () {
   if (this._update && (this._update.$push || this._update.$pull)) {
-    console.log('save-user')
+    // console.log('save-user')
   } else {
     await Notification.create({
       from: this.id,
@@ -117,7 +117,7 @@ userSchema.post('save', async function () {
 userSchema.post('updateOne', async function (next) {
   const { username, fname, lname } = this._update
   if (this._update && (this._update.$push || this._update.$pull)) {
-    console.log('updateOne-user')
+    // console.log('updateOne-user')
   } else {
     await Notification.create({
       from: this._conditions._id,

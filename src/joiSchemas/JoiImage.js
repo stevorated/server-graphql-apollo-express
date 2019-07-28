@@ -9,7 +9,7 @@ const imageType = {
   rules: [{
     name: 'imageType',
     validate (params, value, state, options) {
-      console.log(value)
+      // console.log(value)
       const allowed = ['image/jpeg', 'image/jpg', 'image/png']
       if (!allowed.includes(value)) {
         

@@ -8,7 +8,7 @@ const { ObjectId } = mongoose.Types
 
 export default {
   Query: {
-    getMyPosts: async (root, { id, limit = null, skip = 0, sort = -1 }, { req }, info) => {
+    getMyPosts: async (root, { id, limit = 10, skip = 0, sort = -1 }, { req }, info) => {
       // VALIDATION
       if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`) // CHANGED
       if (!ObjectId.isValid(req.session.userId ? req.session.userId : req.session.passport.user.userId)) throw new UserInputError(`invalid ID`) // CHANGED - REMOVED CURELY BRACES
@@ -16,12 +16,18 @@ export default {
       const posts = await Post.find({ createdBy: ObjectId(req.session.userId ? req.session.userId : req.session.passport.user.userId) }, null, { sort: { createdAt: sort }, limit, skip })
       return posts
     },
-    getPosts: async (root, { limit = null, skip = 0 }, { req }, info) => {
+    getPosts: async (root, { id, limit = 10, skip = 0 }, { req }, info) => {
       // QUERY
-      const posts = await Post.find({}, null, { sort: { createdAt: -1 }, limit, skip })
-      return posts
+      console.log('ya alla')
+      if(!id) {
+        const posts = await Post.find({}, null, { sort: { createdAt: -1 }, limit, skip })
+        return posts
+      } else {
+        const post = await Post.find({ _id: ObjectId(id) }, null, { sort: { createdAt: -1 }, limit, skip })
+        return post
+      }
     },
-    getUsersPosts: async (root, { id, limit = null, skip = 0, sort = -1 }, { req }, info) => {
+    getUsersPosts: async (root, { id, limit = 10, skip = 0, sort = -1 }, { req }, info) => {
       // VALIDATION
       if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`)
       if (!ObjectId.isValid(id)) throw new UserInputError(`invalid ID`)

@@ -41,7 +41,7 @@ export default {
   },
   Query: {
     getMyNotifications: async (root, {
-      limit = null,
+      limit = 10,
       skip = 0,
       sort = -1
     }, { req }, info) => {
@@ -51,7 +51,13 @@ export default {
       if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`) // CHANGED
       if (!ObjectId.isValid(userId)) throw new UserInputError(`invalid ID`) // CHANGED - REMOVED CURELY BRACES
       // QUERY
-      const res = await Notification.find({ show: true }, null, { sort: { createdAt: sort }, limit, skip })
+      const res = await Notification.find({
+        show: true,
+        $and: [
+          // { to: null },
+          { from: { $ne: ObjectId(userId) } }
+        ]
+      }, null, { sort: { createdAt: sort }, limit, skip })
       return res
     },
     getGlobalNotifications: async (root, {

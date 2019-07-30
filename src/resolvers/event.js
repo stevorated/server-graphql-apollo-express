@@ -70,7 +70,8 @@ export default {
         return events
       }
       if (past) {
-        return Event.find({
+
+        const events = await Event.find({
           createdBy: ObjectId(userId),
           startDate: { $lte: moment().format('YYYY-MM-DD') }
         },
@@ -80,6 +81,8 @@ export default {
           limit: controledLimit,
           skip
         })
+        console.log('past', events)
+        return events
       }
       return Event.find({ createdBy: ObjectId(userId), startDate: { $gte: moment().format('YYYY-MM-DD') } }, null, { sort: { startDate: sort }, limit: controledLimit, skip })
     },

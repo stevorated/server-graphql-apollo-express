@@ -38,6 +38,7 @@ export default gql`
         posts: [Post]!
         likes: [Post]
         avatar: File
+        followingEvents: [Event]
         following: [User]
         followers: [User]
         createdAt: String!

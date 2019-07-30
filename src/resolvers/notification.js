@@ -48,6 +48,7 @@ export default {
       const session = req.session.passport ? req.session.passport.user : req.session
       const { userId } = session
       // VALIDATION
+      const controledLimit = (limit && limit > 50) ? 50 : limit
       if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`) // CHANGED
       if (!ObjectId.isValid(userId)) throw new UserInputError(`invalid ID`) // CHANGED - REMOVED CURELY BRACES
       // QUERY
@@ -57,7 +58,7 @@ export default {
           // { to: null },
           { from: { $ne: ObjectId(userId) } }
         ]
-      }, null, { sort: { createdAt: sort }, limit, skip })
+      }, null, { sort: { createdAt: sort }, limit: controledLimit, skip })
       return res
     },
     getGlobalNotifications: async (root, {
@@ -68,6 +69,7 @@ export default {
       show = false,
       to = null
     }, { req }, info) => {
+      const controledLimit = (limit && limit > 50) ? 50 : limit
       const session = req.session.passport ? req.session.passport.user : req.session
       const { userId } = session
       // VALIDATION
@@ -75,7 +77,7 @@ export default {
       if (!ObjectId.isValid(userId)) throw new UserInputError(`invalid ID`)
 
       // QUERY
-      const res = await Notification.find({ to, show }, null, { sort: { createdAt: sort }, limit, skip })
+      const res = await Notification.find({ to, show }, null, { sort: { createdAt: sort }, limit: controledLimit, skip })
       return res
     }
   },

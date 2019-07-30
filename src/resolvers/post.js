@@ -10,15 +10,23 @@ export default {
   Query: {
     getMyPosts: async (root, { id, limit = 10, skip = 0, sort = -1 }, { req }, info) => {
       // VALIDATION
+      const controledLimit = (limit > 50) ? 50 : limit
       if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`) // CHANGED
       if (!ObjectId.isValid(req.session.userId ? req.session.userId : req.session.passport.user.userId)) throw new UserInputError(`invalid ID`) // CHANGED - REMOVED CURELY BRACES
       // QUERY
-      const posts = await Post.find({ createdBy: ObjectId(req.session.userId ? req.session.userId : req.session.passport.user.userId) }, null, { sort: { createdAt: sort }, limit, skip })
+      const posts = await Post.find({
+        createdBy: ObjectId(req.session.userId ? req.session.userId : req.session.passport.user.userId)
+      },
+      null,
+      {
+        sort: { createdAt: sort },
+        limit: controledLimit,
+        skip
+      })
       return posts
     },
     getPosts: async (root, { id, limit = 10, skip = 0 }, { req }, info) => {
       // QUERY
-
       if (!id) {
         const posts = await Post.find({}, null, { sort: { createdAt: -1 }, limit, skip })
         return posts
@@ -29,10 +37,11 @@ export default {
     },
     getUsersPosts: async (root, { id, limit = 10, skip = 0, sort = -1 }, { req }, info) => {
       // VALIDATION
+      const controledLimit = (limit > 50) ? 50 : limit
       if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`)
       if (!ObjectId.isValid(id)) throw new UserInputError(`invalid ID`)
       // QUERY
-      const posts = await Post.find({ createdBy: ObjectId(id) }, null, { sort: { createdAt: sort }, limit, skip })
+      const posts = await Post.find({ createdBy: ObjectId(id) }, null, { sort: { createdAt: sort }, limit: controledLimit, skip })
       return posts
     }
   },
@@ -71,6 +80,7 @@ export default {
           }
           // QUERY
           await User.updateOne({ _id: ObjectId(postOwner.id) }, { $pull: { posts: post } })
+          await Notification.deleteMany({ post })
           await Comment.deleteMany({ post })
           await Post.deleteOne({ _id: postToDeleteExists })
           return true

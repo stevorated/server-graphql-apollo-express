@@ -123,6 +123,10 @@ export default {
       const res = await user.populate({ path: 'likes', options: { sort: { createdAt: -1 } } }).execPopulate()
       return res.likes
     },
+    followingEvents: async (user, args, context, info) => {
+      const res = await user.populate({ path: 'followingEvents', options: { sort: { createdAt: -1 } } }).execPopulate()
+      return res.followingEvents
+    },
     following: async (user, args, context, info) => {
       const res = await user.populate({ path: 'following', options: { sort: { createdAt: -1 } } }).execPopulate()
       return res.following

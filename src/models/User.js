@@ -66,6 +66,10 @@ const userSchema = new mongoose.Schema({
     type: ObjectId,
     ref: 'File'
   },
+  followingEvents: [{
+    type: ObjectId,
+    ref: 'User'
+  }],
   following: [{
     type: ObjectId,
     ref: 'User'

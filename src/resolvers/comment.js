@@ -1,12 +1,11 @@
 import Joi from '@hapi/joi'
 import { createComment, updateComment } from '../joiSchemas'
-import { Post, Comment } from '../models'
+import { Post, Comment, Notification } from '../models'
 import { UserInputError } from 'apollo-server-core'
 import { ApolloError } from 'apollo-server-express'
 import mongoose from 'mongoose'
 
-const { ObjectId } = mongoose.Types
-
+// const { ObjectId } = mongoose.Types
 export default {
   Mutation: {
     createComment: async (root, args, { req }, info) => {
@@ -22,7 +21,14 @@ export default {
       const session = req.session.passport ? req.session.passport.user : req.session
       const { userId } = session
       const { body, id } = args
+      
       await Joi.validate(args, updateComment(id), { abortEarly: false })
+      const commentToUpdate = await Comment.findById(id)
+      if (commentToUpdate) {
+        if (commentToUpdate.createdBy.toString() !== userId.toString()) {
+          return new ApolloError('Hey It\'s Not Your Comment!')
+        }
+      }
       const comment = await Comment.findByIdAndUpdate(id, { body }, { new: true })
       return comment
     },
@@ -37,6 +43,7 @@ export default {
             return new ApolloError('Hey It\'s Not Your Comment!')
           }
           // QUERY
+          await Notification.deleteMany({ comment: args.id })
           await Post.findOneAndUpdate({ _id: commentToDelete.post }, { $pull: { comments: commentToDelete._id } }, { new: true })
           const comment = await Comment.findById(commentToDelete.id)
           await Comment.deleteOne({ _id: commentToDelete })

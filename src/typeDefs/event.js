@@ -17,12 +17,15 @@ export default gql`
       ): Event @auth
 
     deleteEvent(event: ID!): Boolean @auth
+    followEvent(event: ID!): Event @auth
   }
 
   extend type Query {
-    getMyEvents(sort: Int ,limit: Int, skip: Int): [Event] @auth
+    getMonthsEvents(month: String, sort: Int, limit: Int, skip: Int): [Event] @auth
+    getMyMonthsEvents(month: String, sort: Int, limit: Int, skip: Int, followed: Boolean, suggested: Boolean): [Event] @auth
+    getMyEvents(sort: Int ,limit: Int, skip: Int, past: Boolean, followed: Boolean, suggested: Boolean): [Event] @auth
     getMyEventsFeed(sort: Int ,limit: Int, skip: Int): [Event] @auth
-    getEvents(id: ID, limit: Int, skip: Int): [Event] @auth
+    getEvents(id: ID, limit: Int, skip: Int, byCreatedAt: Boolean, byPopular: Boolean): [Event] @auth
     getEventsFeed(id: ID, limit: Int, skip: Int): [Event] @auth
     getUsersEvents(id: ID! sort: Int ,limit: Int, skip: Int): [Event] @auth
   }
@@ -32,6 +35,8 @@ export default gql`
     createdBy: User!
     fbId: String
     name: String!
+    followers: [User]
+    followersCount: Int
     description: String
     coverPhoto: File!
     thumbnil: File!

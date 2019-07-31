@@ -206,10 +206,10 @@ export default {
         )
         await Notification.create({
           from: myUser.id,
-          to: eventToFollow.id,
+          to: updatedEventToUnfollow.createdBy,
           body: `unfollowed event, name: ${eventToFollow.name} id: ${args.event}`,
           action: 'Unfollow-Event',
-          event: eventToFollow.id,
+          event: updatedEventToUnfollow._id,
           post: null,
           comment: null
         })
@@ -225,10 +225,10 @@ export default {
       )
       await Notification.create({
         from: myUser.id,
-        to: eventToFollow.createdBy.id,
+        to: updatedEventToFollow.createdBy,
         body: `followed event,name: ${eventToFollow.name} id: ${args.event}`,
         action: 'Follow-Event',
-        event: eventToFollow.id,
+        event: updatedEventToFollow._id,
         post: null,
         comment: null
       })

@@ -81,7 +81,7 @@ export default {
           limit: controledLimit,
           skip
         })
-        console.log('past', events)
+        // console.log('past', events)
         return events
       }
       return Event.find({ createdBy: ObjectId(userId), startDate: { $gte: moment().format('YYYY-MM-DD') } }, null, { sort: { startDate: sort }, limit: controledLimit, skip })

@@ -9,6 +9,7 @@ export const createEvent = () => Joi.object().keys({
   venue: Joi.string().required().max(100).label('Event Venue (venue)'),
   address: Joi.string().allow('').label('Event Address (address)'),
   artists: Joi.array().required().max(10).label('Event Artist list (artists)'),
+  startTimestamp: Joi.number().required().label('Event Start Date (startDate)'),
   startDate: Joi.string().required().max(15).label('Event Start Date (startDate)'),
   startTime: Joi.string().required().max(15).label('Event Start Time (startTime)'),
   endDate: Joi.string().max(15).label('Event End Date (endDate)'),

@@ -10,6 +10,7 @@ export default gql`
       venue: String!,
       address: String,
       artists: [String!]!,
+      startTimestamp: Int,
       startDate: String!,
       startTime: String!,
       endDate: String,

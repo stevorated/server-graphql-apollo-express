@@ -78,10 +78,15 @@ const userSchema = new mongoose.Schema({
     type: ObjectId,
     ref: 'User'
   }],
-  events: {
+  events: [{
     type: ObjectId,
     ref: 'Event'
-  }
+  }],
+  seen: [{
+    type: ObjectId,
+    // unique: true,
+    ref: 'Notification'
+  }]
 },
 {
   timestamps: true
@@ -110,6 +115,7 @@ userSchema.post('save', async function () {
       to: null,
       body: `new account created!,  username: ${this.username}`,
       show: false,
+      type: 'Profile',
       action: 'Create-Profile',
       event: null,
       post: null,
@@ -118,24 +124,25 @@ userSchema.post('save', async function () {
   }
 })
 
-userSchema.post('updateOne', async function (next) {
-  const { username, fname, lname } = this._update
-  if (this._update && (this._update.$push || this._update.$pull)) {
-    // console.log('updateOne-user')
-  } else {
-    await Notification.create({
-      from: this._conditions._id,
-      to: null,
-      body: `update his profile details are: {${username}, ${fname}, ${lname}}`,
-      show: false,
-      action: 'Update-Profile',
-      event: null,
-      post: null,
-      comment: null
-    })
-  }
-  // console.log(notification)
-})
+// userSchema.post('updateOne', async function (next) {
+//   const { username, fname, lname } = this._update
+//   if (this._update && (this._update.$push || this._update.$pull)) {
+//     // console.log('updateOne-user')
+//   } else {
+//     await Notification.create({
+//       from: this._conditions._id,
+//       to: null,
+//       body: `update his profile details are: {${username}, ${fname}, ${lname}}`,
+//       show: false,
+//       type: 'ProfileUpdate',
+//       action: 'Update-Profile',
+//       event: null,
+//       post: null,
+//       comment: null
+//     })
+//   }
+//   // console.log(notification)
+// })
 
 const User = mongoose.model('User', userSchema)
 

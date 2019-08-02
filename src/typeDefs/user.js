@@ -41,6 +41,7 @@ export default gql`
         followingEvents: [Event]
         following: [User]
         followers: [User]
+        seen: [LastNotification]
         createdAt: String!
         updatedAt: String!
     }

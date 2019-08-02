@@ -45,6 +45,7 @@ postSchema.pre('deleteOne', async function () {
     post: prev,
     event: null,
     body: `deleted a post saying: ${prev.body}`,
+    type: 'Post',
     action: 'Delete-Post',
     comment: null
   })
@@ -57,6 +58,7 @@ postSchema.post('save', async function () {
     body: `posted ${this.body}`,
     post: this,
     action: 'Create-Post',
+    type: 'Post',
     event: null,
     comment: null
   })

@@ -9,8 +9,9 @@ const { ObjectId } = mongoose.Types
 
 export default {
   Query: {
-    me: (root, args, { req }, info) => {
-      return User.findById(req.session.passport ? req.session.passport.user.userId : req.session.userId )
+    me: async (root, args, { req }, info) => {
+      const res = await User.findById(req.session.passport ? req.session.passport.user.userId : req.session.userId)
+      return res
     },
     users: (root, args, { req }, info) => {
       const users = User.find({})
@@ -62,7 +63,8 @@ export default {
       return signOut(req, res)
     },
     updateMyProfile: async (root, args, { req, res }, info) => {
-      const { userId } = req.session
+      const session = req.session.passport ? req.session.passport.user : req.session
+      const { userId } = session
       const { username, fname, lname } = args
       const usernameTaken = !await User.doesntExist({ username })
       // console.log('taken?', usernameTaken)
@@ -92,6 +94,7 @@ export default {
           from: myUser.id,
           to: userToFollow.id,
           body: `unfollowed ${myUser.id}`,
+          type: 'UserFollowers',
           action: 'Unfollow-User',
           event: null,
           post: null,
@@ -106,6 +109,7 @@ export default {
         from: myUser.id,
         to: userToFollow.id,
         body: `followed ${myUser.id}`,
+        type: 'UserFollowers',
         action: 'Follow-User',
         event: null,
         post: null,
@@ -134,6 +138,10 @@ export default {
     followers: async (user, args, context, info) => {
       const res = await user.populate({ path: 'followers', options: { sort: { createdAt: -1 } } }).execPopulate()
       return res.followers
+    },
+    seen: async (user, args, context, info) => {
+      const res = await user.populate({ path: 'seen' }).execPopulate()
+      return res.seen
     },
     avatar: async (user, args, context, info) => {
       const res = await user.populate({ path: 'avatar' }).execPopulate()

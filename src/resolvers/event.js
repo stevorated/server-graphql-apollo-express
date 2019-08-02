@@ -72,7 +72,7 @@ export default {
       if (past) {
 
         const events = await Event.find({
-          createdBy: ObjectId(userId),
+
           startDate: { $lte: moment().format('YYYY-MM-DD') }
         },
         null,
@@ -207,7 +207,9 @@ export default {
         await Notification.create({
           from: myUser.id,
           to: updatedEventToUnfollow.createdBy,
+          show: false,
           body: `unfollowed event, name: ${eventToFollow.name} id: ${args.event}`,
+          type: 'EventFollowers',
           action: 'Unfollow-Event',
           event: updatedEventToUnfollow._id,
           post: null,
@@ -227,6 +229,7 @@ export default {
         from: myUser.id,
         to: updatedEventToFollow.createdBy,
         body: `followed event,name: ${eventToFollow.name} id: ${args.event}`,
+        type: 'EventFollowers',
         action: 'Follow-Event',
         event: updatedEventToFollow._id,
         post: null,

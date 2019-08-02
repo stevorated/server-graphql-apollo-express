@@ -4,10 +4,11 @@ export default gql`
   extend type Mutation {
     createNotification (
       body: String
-      new: Boolean
+      unread: Boolean
       show: Boolean
       post: ID
       event: ID
+      type: String
       action: String
       ): Notification @auth
     readNotification (
@@ -24,12 +25,13 @@ export default gql`
     id: ID!
     to: User
     body: String!
-    new: Boolean!
+    unread: Boolean!
     show: Boolean!
     post: Post
     comment: Comment
     event: Event
     from: User
+    type: String
     action: String!
     createdAt: String!
     updatedAt: String!

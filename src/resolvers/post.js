@@ -96,7 +96,7 @@ export default {
       const { userId } = session
       const likePost = await Post.findById(args.id)
       if (!likePost) {
-        return new UserInputError('Something went wrong!')
+        return new UserInputError('Something went wrong! can\'t find your post')
       }
       if (likePost.likes.includes(userId)) {
         await Post.updateOne({ _id: ObjectId(args.id) }, { $pull: { likes: userId } })
@@ -104,10 +104,11 @@ export default {
         await User.updateOne({ _id: ObjectId(userId) }, { $pull: { likes: args.id } })
         await Notification.create({
           from: userId,
-          // show: false,
+          show: false,
           to: postAfter.createdBy,
           body: `unliked post id:${args.id}`,
           post: args.id,
+          type: 'PostLikes',
           action: 'Unlike-Post',
           event: null,
           comment: null
@@ -124,6 +125,7 @@ export default {
         to: postAfter.createdBy,
         body: `liked post id:${args.id}`,
         post: args.id,
+        type: 'PostLikes',
         action: 'Like-Post',
         event: null,
         comment: null

@@ -35,6 +35,7 @@ commentSchema.pre('deleteOne', async function () {
     comment: prev,
     post: prev.post,
     body: `deleted a comment saying: ${prev.body}`,
+    type: 'Comment',
     action: 'Delete-Comment'
   })
   // next()
@@ -49,6 +50,7 @@ commentSchema.post('save', async function () {
     comment: this,
     post: post,
     event: null,
+    type: 'Comment',
     action: 'Create-Comment'
   })
 })

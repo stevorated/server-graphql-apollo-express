@@ -119,7 +119,8 @@ eventSchema.pre('deleteOne', async function () {
     to: null,
     evemt: prev,
     show: false,
-    body: `deleted an evemt saying: ${prev.name}`,
+    body: `deleted an event saying: ${prev.name}`,
+    type: 'Event',
     action: 'Delete-Event'
   })
 })
@@ -130,6 +131,7 @@ eventSchema.post('save', async function () {
     to: null,
     body: `published a new event ${this.name}`,
     event: this,
+    type: 'Event',
     action: 'Create-Event'
   })
 })

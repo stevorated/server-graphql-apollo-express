@@ -4,6 +4,7 @@ import comment from './comment'
 import file from './file'
 import event from './event'
 import notification from './notification'
+import lastNotifications from './lastNotifications'
 
 export default [
   user,
@@ -11,5 +12,6 @@ export default [
   comment,
   file,
   event,
-  notification
+  notification,
+  lastNotifications
 ]

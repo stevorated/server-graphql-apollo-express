@@ -25,7 +25,6 @@ export default {
         unread,
         show
       }, null, { sort: { createdAt: sort }, limit: controledLimit, skip })
-      console.log(res)
       const idsArray = res.map((notification) => {
         return notification.originId
       })

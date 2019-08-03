@@ -2,7 +2,8 @@ import { gql } from 'apollo-server-express'
 
 export default gql`
   extend type Query {
-    getLastNotifications (sort: Int ,limit: Int, skip: Int, unread: Boolean, show: Boolean, post: ID): [LastNotification] @auth
+    getLastNotifications (sort: Int ,limit: Int, skip: Int, unread: Boolean, show: Boolean): [LastNotification] @auth
+    getNotificationsCount (sort: Int ,limit: Int, skip: Int, unread: Boolean, show: Boolean): [LastNotification] @auth
   }
 
   type LastNotification {

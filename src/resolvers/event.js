@@ -70,10 +70,8 @@ export default {
         return events
       }
       if (past) {
-
         const events = await Event.find({
-
-          startDate: { $lte: moment().format('YYYY-MM-DD') }
+          startDate: { $gte: moment().add('days', 1).format('YYYY-MM-DD') }
         },
         null,
         {

@@ -71,7 +71,7 @@ export default {
       }
       if (past) {
         const events = await Event.find({
-          startDate: { $gte: moment().add('days', 1).format('YYYY-MM-DD') }
+          startDate: { $gte: moment().add(1, 'days').format('YYYY-MM-DD') }
         },
         null,
         {

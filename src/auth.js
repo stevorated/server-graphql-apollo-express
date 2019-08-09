@@ -39,6 +39,7 @@ export const signOut = (req, res) => new Promise((resolve, reject) => {
     res.clearCookie(SESSION_NAME)
     resolve(true)
   })
+  res.clearCookie(SESSION_NAME)
 })
 
 export const protectedStatic = (req, res, done) => {

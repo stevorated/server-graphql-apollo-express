@@ -60,7 +60,7 @@ export default {
       req.session.save()
       const userWithToken = await User.findById(user.id)
       const linkToConfirm =
-        `${MY_PUBLIC_DOMAIN}/confirm_mail/${userWithToken.email_token}`
+        `${MY_PUBLIC_DOMAIN}/api/confirm_mail/${userWithToken.email_token}`
       await sendWelcomeEmail(user.email, user.fname, linkToConfirm)
       return user
     },

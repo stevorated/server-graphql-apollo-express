@@ -181,10 +181,10 @@ app.get('/api/confirm_mail/:token', async (req, res) => {
       { _id: mongoose.Types.ObjectId(tokenDecoded.id) },
       { email_confirmed: true }
     )
-    return res.status(200).redirect('http://localhost:8080/login')
+    return res.status(200).redirect()
   } catch (error) {
     return res.status(404).send('error')
-    // res.redirect('http://localhost:8080/login')
+    // res.redirect(`)
   }
 })
 
@@ -193,16 +193,16 @@ app.get('/api/reset_password_start/:token', async (req, res) => {
     const tokenDecoded = jwt.verify(req.params.token, RESET_TOKEN_SECRET)
     const user = await User.findById(tokenDecoded.id)
     if (user.reset_password_token !== req.params.token) {
-      return res.redirect('http://localhost:8080/somethingwentwrong')
+      return res.redirect(`${MY_DOMAIN}/somethingwentwrong`)
     }
     // res.status(200).send({ tokenDecoded, data: Date.now() })
     await User.updateOne({ _id: tokenDecoded.id }, { verifiedResetToken: true })
     return res
       .status(200)
-      .redirect(`http://localhost:8080/reset_pass_callback/${req.params.token}`)
+      .redirect(`${MY_DOMAIN}/reset_pass_callback/${req.params.token}`)
   } catch (error) {
     // res.status(404).send({ token: req.params.token })
-    return res.redirect('http://localhost:8080/somethingwentwrong')
+    return res.redirect(`${MY_DOMAIN}/somethingwentwrong`)
   }
 })
 

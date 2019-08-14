@@ -52,6 +52,6 @@ const LastNotificationSchema = new mongoose.Schema(
   }
 )
 
-const LastNotification = mongoose.model('Last_Notification', LastNotificationSchema);
+const LastNotification = mongoose.model('Last_Notification', LastNotificationSchema)
 
 export default LastNotification

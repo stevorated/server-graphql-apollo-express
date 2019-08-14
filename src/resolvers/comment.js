@@ -12,6 +12,12 @@ export default {
       const session = req.session.passport ? req.session.passport.user : req.session
       const { userId } = session
       const { body, post } = args
+      try {
+        const found = await Post.findById(post)
+        if (!found) return new UserInputError(`Hey it's not a valid post`)
+      } catch (e) {
+        throw new UserInputError(`Hey it's not a valid post`)
+      }
       await Joi.validate(args, createComment(post), { abortEarly: false })
       const comment = await Comment.create({ body, createdBy: userId, post })
       await Post.updateOne({ _id: post }, { $push: { comments: comment } })

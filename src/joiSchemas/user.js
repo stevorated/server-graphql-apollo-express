@@ -1,12 +1,13 @@
 import Joi from '@hapi/joi'
 
 const email = Joi.string().email().required().label('Email')
-const username = Joi.string().alphanum().min(4).max(30).required().label('Username')
+const username = Joi.string().min(4).max(30).required().label('Username')
 const fname = Joi.string().min(2).max(100).required().label('First Name')
 const lname = Joi.string().min(2).max(100).required().label('Last Name')
 const usernameUpdate = Joi.string().alphanum().min(4).max(30).label('Username')
 const fnameUpdate = Joi.string().min(2).max(100).label('First Name')
 const lnameUpdate = Joi.string().min(2).max(100).label('Last Name')
+const bioUpdate = Joi.string().min(2).max(100).label('Bio')
 const password = Joi.string().min(6).max(30).regex(/^(?=.*[a-z])(?=.*[A-Z])[A-Za-z\d@$!%#*^?&]{6,30}$/).required().label('Password').options({
   language: {
     string: {
@@ -16,6 +17,16 @@ const password = Joi.string().min(6).max(30).regex(/^(?=.*[a-z])(?=.*[A-Z])[A-Za
     }
   }
 })
+const newPassword = Joi.string().min(6).max(30).regex(/^(?=.*[a-z])(?=.*[A-Z])[A-Za-z\d@$!%#*^?&]{6,30}$/).required().label('Password').options({
+  language: {
+    string: {
+      regex: {
+        base: 'Between 6 and 30 characters, with at least one uppercase letter & one lowercase letter. (but that\'s not really enough. '
+      }
+    }
+  }
+})
+const token = Joi.string().label('Token')
 // const password = Joi.string().min(8).max(30).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*^?&#])[A-Za-z\d@$!%#*^?&]{8,30}$/).required().label('Password').options({
 //   language: {
 //     string: {
@@ -47,8 +58,19 @@ export const signIn = Joi.object().keys({
   password
 })
 
+export const changePassword = Joi.object().keys({
+  password,
+  newPassword
+})
+
+export const resetPassword = Joi.object().keys({
+  newPassword,
+  token
+})
+
 export const updateMyProfile = Joi.object().keys({
   username: usernameUpdate,
   fname: fnameUpdate,
-  lname: lnameUpdate
+  lname: lnameUpdate,
+  bio: bioUpdate
 })

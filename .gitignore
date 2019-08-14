@@ -5,7 +5,9 @@ package-lock.json
 *.log*
 .env
 config/
-assets/
+assets/images
+assets/templates
+
 playground/
 # dependencies
 *.lock
@@ -39,4 +41,3 @@ node_modules
 *.log*
 
 .env
-

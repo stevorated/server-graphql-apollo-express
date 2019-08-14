@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`testing user resolvers shouldnt be able to register user  with short lname  1`] = `"child \\"Last Name\\" fails because [\\"Last Name\\" length must be at least 2 characters long]"`;
+
+exports[`testing user resolvers shouldnt be able to register user with NO email  1`] = `"child \\"Email\\" fails because [\\"Email\\" is not allowed to be empty, \\"Email\\" must be a valid email]"`;
+
+exports[`testing user resolvers shouldnt be able to register user with NO lname  1`] = `"child \\"Last Name\\" fails because [\\"Last Name\\" is not allowed to be empty, \\"Last Name\\" length must be at least 2 characters long]"`;
+
+exports[`testing user resolvers shouldnt be able to register user with NO password  1`] = `"child \\"Password\\" fails because [\\"Password\\" is not allowed to be empty, \\"Password\\" length must be at least 6 characters long, \\"Password\\" Between 6 and 30 characters, with at least one uppercase letter & one lowercase letter. (but that's not really enough. ]"`;
+
+exports[`testing user resolvers shouldnt be able to register user with NO short fname  1`] = `"child \\"First Name\\" fails because [\\"First Name\\" is not allowed to be empty, \\"First Name\\" length must be at least 2 characters long]"`;
+
+exports[`testing user resolvers shouldnt be able to register user with NO username  1`] = `"child \\"Username\\" fails because [\\"Username\\" is not allowed to be empty, \\"Username\\" must only contain alpha-numeric characters, \\"Username\\" length must be at least 4 characters long]"`;
+
+exports[`testing user resolvers shouldnt be able to register user with invalid email  1`] = `"child \\"Email\\" fails because [\\"Email\\" must be a valid email]"`;
+
+exports[`testing user resolvers shouldnt be able to register user with invalid password  1`] = `"child \\"Password\\" fails because [\\"Password\\" length must be at least 6 characters long, \\"Password\\" Between 6 and 30 characters, with at least one uppercase letter & one lowercase letter. (but that's not really enough. ]"`;
+
+exports[`testing user resolvers shouldnt be able to register user with short fname  1`] = `"child \\"First Name\\" fails because [\\"First Name\\" length must be at least 2 characters long]"`;
+
+exports[`testing user resolvers shouldnt be able to register user with short or no username  1`] = `"child \\"Username\\" fails because [\\"Username\\" length must be at least 4 characters long]"`;
+
+exports[`testing user resolvers shouldnt be able to register user with short username  1`] = `"child \\"Username\\" fails because [\\"Username\\" length must be at least 4 characters long]"`;

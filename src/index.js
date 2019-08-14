@@ -12,8 +12,12 @@ import schemaDirectives from './directives'
 import db, { mongoString } from './db'
 import passport from 'passport'
 import FacebookStrategy from 'passport-facebook'
+import jwt from 'jsonwebtoken'
+import mongoose from 'mongoose'
+// import { User } from './models'
+import { sendWelcomeEmail } from './utils/mailConfig'
 import { User } from './models'
-
+// sendWelcomeEmail('garbers8@gmail.com','shirel')
 const {
   MY_DOMAIN,
   NODE_ENV,
@@ -23,6 +27,7 @@ const {
   SESSION_SECRET,
   SESSION_LIFE,
   ASSETS_DIR,
+  PUBLIC_ASSETS_DIR,
   CLIENT_ADDR,
   APP_ID,
   APP_SECRET,
@@ -30,13 +35,16 @@ const {
   FB_LOGIN_PATH,
   FB_LOGIN_CB_PATH,
   FB_LOGIN_FAIL_PATH,
-  FB_SUCCESS_URL
+  FB_SUCCESS_URL,
+  RESET_TOKEN_SECRET,
+  CONFIRM_MAIL_TOKEN_SERCRET
 } = process.env
 
 const IN_PROD = NODE_ENV === 'production'
 console.log('Production: ', IN_PROD)
 
 const assetsDir = path.join(__dirname, '..', ASSETS_DIR)
+const publicAssetsDir = path.join(__dirname, '..', PUBLIC_ASSETS_DIR)
 
 const app = express()
 
@@ -45,7 +53,8 @@ app.disable('x-powered-by')
 const MongoSessionStore = mongoDBStore(session)
 const store = new MongoSessionStore({
   uri: mongoString,
-  collection: SESSION_DB_COLLECTION
+  collection: SESSION_DB_COLLECTION,
+  clearInterval: 60
 })
 store.on('error', function (error) {
   console.log(error)
@@ -69,6 +78,7 @@ app.use(session({
 
 app.use('/api/images', protectedStatic)
 app.use('/api/images', express.static(assetsDir))
+app.use('/api/public_images', express.static(publicAssetsDir))
 
 const server = new ApolloServer({
   typeDefs,
@@ -91,6 +101,7 @@ const server = new ApolloServer({
 
 const corsOptions = {
   origin: [CLIENT_ADDR],
+  methods: ['GET', 'POST'],
   credentials: true
   // sameSite: false
 }
@@ -146,10 +157,37 @@ app.get(FB_LOGIN_CB_PATH,
 app.get(FB_LOGIN_FAIL_PATH, (req, res) => {
   return res.redirect(MY_DOMAIN)
 })
-// ==================================== END FB LOGIN =====================================
+
+// ==================================== END FB LOGIN ===================================== //
+
+app.get('/api/confirm_mail/:token', async (req, res) => {
+  try {
+    const tokenDecoded = jwt.verify(req.params.token, CONFIRM_MAIL_TOKEN_SERCRET)
+    await User.updateOne({ _id: mongoose.Types.ObjectId(tokenDecoded.id) }, { email_confirmed: true })
+    return res.status(200).redirect('http://localhost:8080/login')
+  } catch (error) {
+    return res.status(404).send('error')
+    // res.redirect('http://localhost:8080/login')
+  }
+})
+
+app.get('/api/reset_password_start/:token', async (req, res) => {
+  try {
+    const tokenDecoded = jwt.verify(req.params.token, RESET_TOKEN_SECRET)
+    const user = await User.findById(tokenDecoded.id)
+    if (user.reset_password_token !== req.params.token ) {
+      return res.redirect('http://localhost:8080/somethingwentwrong')
+    }
+    // res.status(200).send({ tokenDecoded, data: Date.now() })
+    await User.updateOne({ _id: tokenDecoded.id }, { verifiedResetToken: true })
+    return res.status(200).redirect(`http://localhost:8080/reset_pass_callback/${req.params.token}`)
+  } catch (error) {
+    // res.status(404).send({ token: req.params.token })
+    return res.redirect('http://localhost:8080/somethingwentwrong')
+  }
+})
 
 app.listen({ port: APP_PORT }, async () => {
   await db()
   console.log(`🚀 Server ready at ${MY_DOMAIN}:${APP_PORT}${server.graphqlPath}`)
-}
-)
+})

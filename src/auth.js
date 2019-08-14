@@ -1,5 +1,5 @@
 import { AuthenticationError } from 'apollo-server-express'
-import { User } from './models'
+import { User, Session } from './models'
 
 const { SESSION_NAME } = process.env
 const message = 'Wrong Details. Try again'
@@ -16,8 +16,21 @@ export const attmeptSignIn = async (email, password) => {
   return user
 }
 
+export const checkPassword = async (id, password) => {
+  const user = await User.findById(id)
+  if (!user) {
+    throw new AuthenticationError(message)
+  }
+  const check = await user.passwordMatch(password)
+  if (!check) {
+    throw new AuthenticationError(message)
+  }
+  return user
+}
+
 export const signedIn = req => {
   if (req.session.passport && req.session.passport.user.userId) return req.session.passport.user.userId
+  // console.log(req.session.userId)
   return req.session.userId
 }
 
@@ -33,14 +46,16 @@ export const ensureSignedOut = req => {
   }
 }
 
-export const signOut = (req, res) => new Promise((resolve, reject) => {
-  req.session.destroy(err => {
-    if (err) reject(err)
-    res.clearCookie(SESSION_NAME)
-    resolve(true)
+export const signOut = async (req, res) => {
+  await Session.deleteOne({ 'session.userId': req.session.userId })
+  return new Promise((resolve, reject) => {
+    req.session.destroy(err => {
+      if (err) reject(err)
+      res.clearCookie(SESSION_NAME)
+      resolve(true)
+    })
   })
-  res.clearCookie(SESSION_NAME)
-})
+}
 
 export const protectedStatic = (req, res, done) => {
   const session = req.session.passport ? req.session.passport.user : req.session

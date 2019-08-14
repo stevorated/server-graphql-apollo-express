@@ -110,7 +110,7 @@ notificationSchema.post('save', () => {
     {
       $out: 'last_notifications'
     }
-  ]).then(res => console.log('notifications updated'))
+  ]).then(res => console.log(''))
 })
 
 const Notification = mongoose.model('Notification', notificationSchema)

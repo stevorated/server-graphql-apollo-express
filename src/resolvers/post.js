@@ -62,9 +62,9 @@ export default {
     updatePost: async (root, args, { req }, info) => {
       // const session = req.session.passport ? req.session.passport.user : req.session
       // const { userId } = session
-      const { body, createdBy } = args
-      await Joi.validate({ body, createdBy }, updatePost(createdBy), { abortEarly: false })
-      const post = await Post.findByIdAndUpdate(createdBy, { body }, { new: true })
+      const { body, postId } = args
+      await Joi.validate({ body, postId }, updatePost(postId), { abortEarly: false })
+      const post = await Post.findByIdAndUpdate(postId, { body }, { new: true })
       return post
     },
     deletePost: async (root, { post }, { req }, info) => {

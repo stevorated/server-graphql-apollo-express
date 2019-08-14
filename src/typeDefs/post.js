@@ -3,7 +3,7 @@ import { gql } from 'apollo-server-express'
 export default gql`
   extend type Mutation {
     createPost(body: String): Post @auth
-    updatePost(body: String, createdBy: ID!): Post @auth
+    updatePost(body: String, postId: ID!): Post @auth
     deletePost(post: ID!): Boolean @auth
     likePost(id: ID!): Post @auth
   }

@@ -50,31 +50,37 @@ const app = express()
 
 app.use(cookieParser(SESSION_NAME))
 app.disable('x-powered-by')
+app.use(function(req, res, next) {
+  res.removeHeader('X-Powered-By')
+  next()
+})
 const MongoSessionStore = mongoDBStore(session)
 const store = new MongoSessionStore({
   uri: mongoString,
   collection: SESSION_DB_COLLECTION,
   clearInterval: 60
 })
-store.on('error', function (error) {
+store.on('error', function(error) {
   console.log(error)
 })
 app.set('trust proxy', 1)
 
-app.use(session({
-  store,
-  name: SESSION_NAME,
-  secret: SESSION_SECRET,
-  resave: true,
-  httpOnly: IN_PROD,
-  rolling: true,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: parseInt(SESSION_LIFE),
-    sameSite: true,
-    secure: IN_PROD // TODO: bring back IN_PROD
-  }
-}))
+app.use(
+  session({
+    store,
+    name: SESSION_NAME,
+    secret: SESSION_SECRET,
+    resave: true,
+    httpOnly: IN_PROD,
+    rolling: true,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: parseInt(SESSION_LIFE),
+      sameSite: true,
+      secure: IN_PROD // TODO: bring back IN_PROD
+    }
+  })
+)
 
 app.use('/api/images', protectedStatic)
 app.use('/api/images', express.static(assetsDir))
@@ -120,14 +126,18 @@ app.get('/api', (req, res) => {
 
 // ================================================ FB LOGIN ==============================
 
-passport.use(new FacebookStrategy({
-  clientID: APP_ID,
-  clientSecret: APP_SECRET,
-  callbackURL: `${MY_PUBLIC_DOMAIN}${FB_LOGIN_CB_PATH}`,
-  profileFields: ['id', 'name', 'email']
-},
-async (accessToken, refreshToken, profile, cb) => handleFacebookUser(accessToken, refreshToken, profile, cb)
-))
+passport.use(
+  new FacebookStrategy(
+    {
+      clientID: APP_ID,
+      clientSecret: APP_SECRET,
+      callbackURL: `${MY_PUBLIC_DOMAIN}${FB_LOGIN_CB_PATH}`,
+      profileFields: ['id', 'name', 'email']
+    },
+    async (accessToken, refreshToken, profile, cb) =>
+      handleFacebookUser(accessToken, refreshToken, profile, cb)
+  )
+)
 
 app.use(passport.initialize())
 
@@ -144,15 +154,16 @@ passport.serializeUser(async (user, done) => {
   })
 })
 
-app.get(FB_LOGIN_PATH,
-  passport.authenticate('facebook', { scope: ['email'] }))
+app.get(FB_LOGIN_PATH, passport.authenticate('facebook', { scope: ['email'] }))
 
-app.get(FB_LOGIN_CB_PATH,
+app.get(
+  FB_LOGIN_CB_PATH,
   passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
-  async function (req, res, done) {
+  async function(req, res, done) {
     // Successful authentication, redirect home.
     return res.redirect(302, FB_SUCCESS_URL)
-  })
+  }
+)
 
 app.get(FB_LOGIN_FAIL_PATH, (req, res) => {
   return res.redirect(MY_DOMAIN)
@@ -162,8 +173,14 @@ app.get(FB_LOGIN_FAIL_PATH, (req, res) => {
 
 app.get('/api/confirm_mail/:token', async (req, res) => {
   try {
-    const tokenDecoded = jwt.verify(req.params.token, CONFIRM_MAIL_TOKEN_SERCRET)
-    await User.updateOne({ _id: mongoose.Types.ObjectId(tokenDecoded.id) }, { email_confirmed: true })
+    const tokenDecoded = jwt.verify(
+      req.params.token,
+      CONFIRM_MAIL_TOKEN_SERCRET
+    )
+    await User.updateOne(
+      { _id: mongoose.Types.ObjectId(tokenDecoded.id) },
+      { email_confirmed: true }
+    )
     return res.status(200).redirect('http://localhost:8080/login')
   } catch (error) {
     return res.status(404).send('error')
@@ -175,12 +192,14 @@ app.get('/api/reset_password_start/:token', async (req, res) => {
   try {
     const tokenDecoded = jwt.verify(req.params.token, RESET_TOKEN_SECRET)
     const user = await User.findById(tokenDecoded.id)
-    if (user.reset_password_token !== req.params.token ) {
+    if (user.reset_password_token !== req.params.token) {
       return res.redirect('http://localhost:8080/somethingwentwrong')
     }
     // res.status(200).send({ tokenDecoded, data: Date.now() })
     await User.updateOne({ _id: tokenDecoded.id }, { verifiedResetToken: true })
-    return res.status(200).redirect(`http://localhost:8080/reset_pass_callback/${req.params.token}`)
+    return res
+      .status(200)
+      .redirect(`http://localhost:8080/reset_pass_callback/${req.params.token}`)
   } catch (error) {
     // res.status(404).send({ token: req.params.token })
     return res.redirect('http://localhost:8080/somethingwentwrong')
@@ -189,5 +208,7 @@ app.get('/api/reset_password_start/:token', async (req, res) => {
 
 app.listen({ port: APP_PORT }, async () => {
   await db()
-  console.log(`🚀 Server ready at ${MY_DOMAIN}:${APP_PORT}${server.graphqlPath}`)
+  console.log(
+    `🚀 Server ready at ${MY_DOMAIN}:${APP_PORT}${server.graphqlPath}`
+  )
 })

@@ -173,6 +173,8 @@ app.get(FB_LOGIN_FAIL_PATH, (req, res) => {
 
 app.get('/api/confirm_mail/:token', async (req, res) => {
   try {
+    console.log(req.params.token)
+    console.log(CONFIRM_MAIL_TOKEN_SECRET)
     const tokenDecoded = jwt.verify(
       req.params.token,
       CONFIRM_MAIL_TOKEN_SECRET

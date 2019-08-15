@@ -14,12 +14,8 @@ import passport from 'passport'
 import FacebookStrategy from 'passport-facebook'
 import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
-// import { User } from './models'
-import { sendWelcomeEmail } from './utils/mailConfig'
 import { User } from './models'
-// sendWelcomeEmail('garbers8@gmail.com','shirel')
 const {
-  MY_DOMAIN,
   NODE_ENV,
   APP_PORT,
   SESSION_DB_COLLECTION,
@@ -96,7 +92,7 @@ const server = new ApolloServer({
       settings: {
         'request.credentials': 'same-origin'
       }
-    }, // TODO: remember to block playground in prod
+    },
   uploads: {
     maxFieldSize: 10000000,
     maxFileSize: 10000000,
@@ -166,7 +162,7 @@ app.get(
 )
 
 app.get(FB_LOGIN_FAIL_PATH, (req, res) => {
-  return res.redirect(MY_DOMAIN)
+  return res.redirect(MY_PUBLIC_DOMAIN)
 })
 
 // ==================================== END FB LOGIN ===================================== //
@@ -211,6 +207,6 @@ app.get('/api/reset_password_start/:token', async (req, res) => {
 app.listen({ port: APP_PORT }, async () => {
   await db()
   console.log(
-    `🚀 Server ready at ${MY_DOMAIN}:${APP_PORT}${server.graphqlPath}`
+    `🚀 Server ready at ${MY_PUBLIC_DOMAIN}${server.graphqlPath}`
   )
 })

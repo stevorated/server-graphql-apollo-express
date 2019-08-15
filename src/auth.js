@@ -70,11 +70,19 @@ export const protectedStatic = (req, res, done) => {
 export const handleFacebookUser = async (accessToken, refreshToken, profile, cb ) => {
   const { id, name, emails } = profile
   const { familyName, givenName } = name
-  const userExists = await User.findOne({ fbId: id })
-  if (!userExists) {
+  const email = emails[0].value
+  const userExists = await User.findOne({ email })
+  if (userExists) {
+    const updatedUser = await User.findOneAndUpdate({ email }, { fbId: id }, { new: true })
+    if (updatedUser) {
+      cb(undefined, updatedUser)
+    }
+  }
+  const loginFromFbBefore = await User.findOne({ fbId: id })
+  if (!loginFromFbBefore) {
     const dbUser = await User.create({
       fbId: id,
-      email: emails[0].value,
+      email,
       fname: givenName,
       lname: familyName,
       username: `${givenName}${familyName}${Date.now()}`,
@@ -85,7 +93,7 @@ export const handleFacebookUser = async (accessToken, refreshToken, profile, cb 
       cb(undefined, dbUser)
     }
   } else {
-    userExists.token = accessToken
-    cb(undefined, userExists)
+    loginFromFbBefore.token = accessToken
+    cb(undefined, loginFromFbBefore)
   }
 }

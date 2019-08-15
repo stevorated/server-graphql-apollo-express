@@ -2,6 +2,7 @@ import sgMail from '@sendgrid/mail'
 sgMail.setApiKey(process.env.SG_API_KEY)
 
 export const sendWelcomeEmail = (email, name, link) => {
+  console.log(email, link, name)
   return sgMail.send({
     to: email,
     from: 'do-not-reply@di.bil.com',
@@ -11,6 +12,7 @@ export const sendWelcomeEmail = (email, name, link) => {
 }
 
 export const sendResetPasswordEmail = (email, link) => {
+  console.log(email, link)
   // console.log(html2(link))
   return sgMail.send({
     to: email,

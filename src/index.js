@@ -183,7 +183,7 @@ app.get('/api/confirm_mail/:token', async (req, res) => {
     )
     return res.status(200).redirect()
   } catch (error) {
-    return res.status(404).send('error')
+    return res.status(404).send({ error: error.message })
     // res.redirect(`)
   }
 })

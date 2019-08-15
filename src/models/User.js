@@ -135,7 +135,7 @@ userSchema.pre('save', async function() {
     console.log(process.env.CONFIRM_MAIL_TOKEN_SECRET)
     const token = jwt.sign({ id: this.id }, process.env.CONFIRM_MAIL_TOKEN_SECRET) // TODO: change secret to hash
     console.log(token)
-    // this.email_token = token
+    this.email_token = token
   }
 })
 

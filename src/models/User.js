@@ -142,8 +142,8 @@ userSchema.pre('updateOne', async function() {
   if (this._update.password) {
     const hashed = await hash(this._update.password, 10)
     this.update({ password: hashed })
-    // const token = jwt.sign({ id: this.id }, 'shhhhh') // TODO: change secret to hash
-    // this.email_token = token
+    const token = jwt.sign({ id: this.id }, process.env.CONFIRM_MAIL_TOKEN_SECRET) // TODO: change secret to hash
+    this.email_token = token
   }
 })
 

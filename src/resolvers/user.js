@@ -85,7 +85,7 @@ export default {
       const user = await User.findOne({ email: email })
       try {
         const token = await jwt.sign({ id: user.id }, RESET_TOKEN_SECRET, { expiresIn: '15 minutes' }) // TODO: change secret to hash
-        const link = `${MY_PUBLIC_DOMAIN}/reset_password_start/${token}`
+        const link = `${MY_PUBLIC_DOMAIN}/api/reset_password_start/${token}`
         await User.updateOne({ _id: ObjectId(user.id) }, { reset_password_token: token, verifiedResetToken: false })
         await sendResetPasswordEmail(email, link)
         return true

@@ -37,7 +37,7 @@ const {
   FB_LOGIN_FAIL_PATH,
   FB_SUCCESS_URL,
   RESET_TOKEN_SECRET,
-  CONFIRM_MAIL_TOKEN_SERCRET
+  CONFIRM_MAIL_TOKEN_SECRET
 } = process.env
 
 const IN_PROD = NODE_ENV === 'production'
@@ -175,7 +175,7 @@ app.get('/api/confirm_mail/:token', async (req, res) => {
   try {
     const tokenDecoded = jwt.verify(
       req.params.token,
-      CONFIRM_MAIL_TOKEN_SERCRET
+      CONFIRM_MAIL_TOKEN_SECRET
     )
     await User.updateOne(
       { _id: mongoose.Types.ObjectId(tokenDecoded.id) },

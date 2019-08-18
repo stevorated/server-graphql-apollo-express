@@ -46,6 +46,7 @@ export default gql`
     username: String!
     fname: String!
     lname: String!
+    events: [Event]!
     posts: [Post]!
     likes: [Post]
     avatar: File

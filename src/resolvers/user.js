@@ -209,6 +209,12 @@ export default {
         .execPopulate()
       return res.posts
     },
+    events: async (user, args, context, info) => {
+      const res = await user
+        .populate({ path: 'events', options: { sort: { createdAt: -1 } } })
+        .execPopulate()
+      return res.events
+    },
     likes: async (user, args, context, info) => {
       const res = await user
         .populate({ path: 'likes', options: { sort: { createdAt: -1 } } })

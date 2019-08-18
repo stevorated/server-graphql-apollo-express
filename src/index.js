@@ -46,7 +46,7 @@ const app = express()
 
 app.use(cookieParser(SESSION_NAME))
 app.disable('x-powered-by')
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.removeHeader('X-Powered-By')
   next()
 })

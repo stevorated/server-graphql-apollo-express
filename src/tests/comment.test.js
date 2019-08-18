@@ -58,7 +58,6 @@ describe('testing comment resolvers', () => {
         `
     })
     otherUserId = otherUser.data.data.signUp.id
-    console.log(otherUserId)
     await instance.post('http://localhost:4001/api/graphql', {
       query: `
         mutation{
@@ -84,7 +83,6 @@ describe('testing comment resolvers', () => {
         `
     })
     mainUserId = mainUser.data.data.signUp.id
-    console.log(mainUserId)
   })
 
   afterAll(async () => {

@@ -137,7 +137,6 @@ export default {
       })
       await User.updateOne({ _id: ObjectId(userId) }, { ...args })
       const user = await User.findById(userId)
-      console.log(bio)
       return user
     },
     follow: async (root, args, { req, res }, info) => {

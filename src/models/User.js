@@ -132,9 +132,7 @@ const userSchema = new mongoose.Schema(
 userSchema.pre('save', async function() {
   if (this.isModified('password')) {
     this.password = await hash(this.password, 10)
-    console.log(process.env.CONFIRM_MAIL_TOKEN_SECRET)
     const token = jwt.sign({ id: this.id }, process.env.CONFIRM_MAIL_TOKEN_SECRET) // TODO: change secret to hash
-    console.log(token)
     this.email_token = token
   }
 })

@@ -82,6 +82,7 @@ export const handleFacebookUser = async (accessToken, refreshToken, profile, cb 
   if (!loginFromFbBefore) {
     const dbUser = await User.create({
       fbId: id,
+      email_confirmed: true,
       email,
       fname: givenName,
       lname: familyName,

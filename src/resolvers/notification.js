@@ -32,7 +32,7 @@ export default {
       // console.log('to:', to)
       args.new = args.new ? args.new : true
       args.show = args.show ? args.show : true
-      // console.log({ ...args, from: userId, to })
+      // { ...args, from: userId, to })
       // await Joi.validate({ ...args, from: userId, to }, createNotification(userId), { abortEarly: false })
       const notification = await Notification.create({ ...args, from: userId, to })
       // console.log(notification)

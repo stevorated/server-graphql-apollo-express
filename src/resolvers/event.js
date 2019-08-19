@@ -256,8 +256,7 @@ export default {
       const controledLimit = limit > 50 || !limit ? 50 : limit
       if (id && !ObjectId.isValid(id)) throw new UserInputError(`invalid ID`)
       if (id && ObjectId.isValid(id)) return [Event.findById(id)]
-      if (sort !== 1 && sort !== -1)
-        throw new UserInputError(`invalid sort must be 1 or -1`)
+      if (sort !== 1 && sort !== -1) throw new UserInputError(`invalid sort must be 1 or -1`)
       return Event.find({}, null, {
         sort: { createdAt: sort },
         limit: controledLimit,

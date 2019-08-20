@@ -228,7 +228,7 @@ describe('testing user resolvers', () => {
     const { errors } = res.data
 
     expect(errors[0].message).toBe(
-      `child \"Username\" fails because [\"Username\" is not allowed to be empty, \"Username\" must only contain alpha-numeric characters, \"Username\" length must be at least 4 characters long]`
+      `child \"Username\" fails because [\"Username\" is not allowed to be empty, \"Username\" length must be at least 4 characters long]`
     )
     expect(errors[0].message).toMatchSnapshot()
   })

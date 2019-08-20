@@ -10,7 +10,7 @@ exports[`testing user resolvers shouldnt be able to register user with NO passwo
 
 exports[`testing user resolvers shouldnt be able to register user with NO short fname  1`] = `"child \\"First Name\\" fails because [\\"First Name\\" is not allowed to be empty, \\"First Name\\" length must be at least 2 characters long]"`;
 
-exports[`testing user resolvers shouldnt be able to register user with NO username  1`] = `"child \\"Username\\" fails because [\\"Username\\" is not allowed to be empty, \\"Username\\" must only contain alpha-numeric characters, \\"Username\\" length must be at least 4 characters long]"`;
+exports[`testing user resolvers shouldnt be able to register user with NO username  1`] = `"child \\"Username\\" fails because [\\"Username\\" is not allowed to be empty, \\"Username\\" length must be at least 4 characters long]"`;
 
 exports[`testing user resolvers shouldnt be able to register user with invalid email  1`] = `"child \\"Email\\" fails because [\\"Email\\" must be a valid email]"`;
 

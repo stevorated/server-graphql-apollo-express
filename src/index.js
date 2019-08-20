@@ -116,10 +116,6 @@ server.applyMiddleware({
 
 app.use(helmet())
 
-app.get('/api', (req, res) => {
-  res.status(200).send('Ya Alla!!!!!!')
-})
-
 // ================================================ FB LOGIN ==============================
 
 passport.use(
@@ -138,7 +134,6 @@ passport.use(
 app.use(passport.initialize())
 
 passport.serializeUser(async (user, done) => {
-  // console.log(' ======= serializeUser: ================ ', user)
   const { _id, fname, lname, email, token } = user
   done(null, {
     // id,
@@ -169,8 +164,6 @@ app.get(FB_LOGIN_FAIL_PATH, (req, res) => {
 
 app.get('/api/confirm_mail/:token', async (req, res) => {
   try {
-    // console.log(req.params.token)
-    // console.log(CONFIRM_MAIL_TOKEN_SECRET)
     const tokenDecoded = jwt.verify(
       req.params.token,
       CONFIRM_MAIL_TOKEN_SECRET
@@ -182,7 +175,6 @@ app.get('/api/confirm_mail/:token', async (req, res) => {
     return res.status(200).redirect(`${process.env.CLIENT_ADDR}`)
   } catch (error) {
     return res.status(404).send({ error: error.message })
-    // res.redirect(`)
   }
 })
 
@@ -193,13 +185,11 @@ app.get('/api/reset_password_start/:token', async (req, res) => {
     if (user.reset_password_token !== req.params.token) {
       return res.redirect(`${MY_PUBLIC_DOMAIN}/somethingwentwrong`)
     }
-    // res.status(200).send({ tokenDecoded, data: Date.now() })
     await User.updateOne({ _id: tokenDecoded.id }, { verifiedResetToken: true })
     return res
       .status(200)
       .redirect(`${CLIENT_ADDR}/reset_pass_callback/${req.params.token}`)
   } catch (error) {
-    // res.status(404).send({ token: req.params.token })
     return res.redirect(`${CLIENT_ADDR}/somethingwentwrong`)
   }
 })

@@ -14,6 +14,7 @@ import passport from 'passport'
 import FacebookStrategy from 'passport-facebook'
 import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
+import xssFilter from 'x-xss-protection'
 import { User } from './models'
 const {
   NODE_ENV,
@@ -50,6 +51,8 @@ app.use(function (req, res, next) {
   res.removeHeader('X-Powered-By')
   next()
 })
+app.use(xssFilter({ setOnOldIE: true }))
+
 const MongoSessionStore = mongoDBStore(session)
 const store = new MongoSessionStore({
   uri: mongoString,

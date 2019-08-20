@@ -194,6 +194,10 @@ app.get('/api/reset_password_start/:token', async (req, res) => {
   }
 })
 
+app.get('*', (req, res) => {
+  return res.redirect(CLIENT_ADDR)
+})
+
 app.listen({ port: APP_PORT }, async () => {
   await db()
   console.log(

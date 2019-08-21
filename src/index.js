@@ -45,7 +45,23 @@ const publicAssetsDir = path.join(__dirname, '..', PUBLIC_ASSETS_DIR)
 
 const app = express()
 
-
+app.use(cookieParser(SESSION_NAME))
+app.disable('x-powered-by')
+app.use(function(req, res, next) {
+  res.removeHeader('X-Powered-By')
+  next()
+})
+app.use(helmet())
+app.use(helmet.noSniff())
+const sixtyDaysInSeconds = 5184000
+app.use(
+  helmet.hsts({
+    maxAge: sixtyDaysInSeconds
+  })
+)
+app.use(helmet.hidePoweredBy())
+app.use(xssFilter({ setOnOldIE: true }))
+app.use(helmet.frameguard({ action: 'sameorigin' }))
 
 const MongoSessionStore = mongoDBStore(session)
 const store = new MongoSessionStore({
@@ -86,10 +102,10 @@ const server = new ApolloServer({
   playground: IN_PROD
     ? false
     : {
-      settings: {
-        'request.credentials': 'same-origin'
-      }
-    },
+        settings: {
+          'request.credentials': 'same-origin'
+        }
+      },
   uploads: {
     maxFieldSize: 10000000,
     maxFileSize: 10000000,
@@ -144,11 +160,10 @@ app.get(FB_LOGIN_PATH, passport.authenticate('facebook', { scope: ['email'] }))
 
 app.get(
   FB_LOGIN_CB_PATH,
-  passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
-  (req, res) => {
-    // Successful authentication, redirect home.
-    return res.redirect(FB_SUCCESS_URL)
-  }
+  passport.authenticate('facebook', {
+    failureRedirect: FB_LOGIN_FAIL_PATH,
+    successRedirect: FB_SUCCESS_URL
+  })
 )
 
 app.get(FB_LOGIN_FAIL_PATH, (req, res) => {
@@ -159,10 +174,7 @@ app.get(FB_LOGIN_FAIL_PATH, (req, res) => {
 
 app.get('/api/confirm_mail/:token', async (req, res) => {
   try {
-    const tokenDecoded = jwt.verify(
-      req.params.token,
-      CONFIRM_MAIL_TOKEN_SECRET
-    )
+    const tokenDecoded = jwt.verify(req.params.token, CONFIRM_MAIL_TOKEN_SECRET)
     await User.updateOne(
       { _id: mongoose.Types.ObjectId(tokenDecoded.id) },
       { email_confirmed: true }
@@ -193,25 +205,13 @@ app.get('*', (req, res) => {
   return res.redirect(CLIENT_ADDR)
 })
 
-app.use(cookieParser(SESSION_NAME))
-app.disable('x-powered-by')
-app.use(function (req, res, next) {
-  res.removeHeader('X-Powered-By')
-  next()
-})
-app.use(helmet())
-app.use(helmet.noSniff())
-const sixtyDaysInSeconds = 5184000
-app.use(helmet.hsts({
-  maxAge: sixtyDaysInSeconds
-}))
-app.use(helmet.hidePoweredBy())
-app.use(xssFilter({ setOnOldIE: true }))
-app.use(helmet.frameguard({ action: 'sameorigin' }))
-
 app.listen({ port: APP_PORT }, async () => {
   await db()
-  console.log(
-    `🚀 Server ready at ${MY_PUBLIC_DOMAIN}${server.graphqlPath}`
-  )
+  console.log(`🚀 Server ready at ${MY_PUBLIC_DOMAIN}${server.graphqlPath}`)
 })
+
+// ,
+//   (req, res) => {
+//     // Successful authentication, redirect home.
+//     // return res.redirect(FB_SUCCESS_URL)
+//   }

@@ -29,7 +29,8 @@ export const checkPassword = async (id, password) => {
 }
 
 export const signedIn = req => {
-  if (req.session.passport && req.session.passport.user.userId) return req.session.passport.user.userId
+  if (req.session.passport && req.session.passport.user.userId)
+    return req.session.passport.user.userId
   // console.log(req.session.userId)
   return req.session.userId
 }
@@ -67,13 +68,22 @@ export const protectedStatic = (req, res, done) => {
   }
 }
 
-export const handleFacebookUser = async (accessToken, refreshToken, profile, cb ) => {
+export const handleFacebookUser = async (
+  accessToken,
+  refreshToken,
+  profile,
+  cb
+) => {
   const { id, name, emails } = profile
   const { familyName, givenName } = name
   const email = emails[0].value
-  const userExists = await User.findOne({ email })
+  const userExists = await User.findOne({ email, fbId: undefined })
   if (userExists) {
-    const updatedUser = await User.findOneAndUpdate({ email }, { fbId: id }, { new: true })
+    const updatedUser = await User.findOneAndUpdate(
+      { email },
+      { fbId: id },
+      { new: true }
+    )
     if (updatedUser) {
       cb(undefined, updatedUser)
     }
@@ -91,6 +101,7 @@ export const handleFacebookUser = async (accessToken, refreshToken, profile, cb 
     })
     if (dbUser) {
       dbUser.token = accessToken
+      dbUser.password = ''
       cb(undefined, dbUser)
     }
   } else {

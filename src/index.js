@@ -45,21 +45,7 @@ const publicAssetsDir = path.join(__dirname, '..', PUBLIC_ASSETS_DIR)
 
 const app = express()
 
-app.use(cookieParser(SESSION_NAME))
-app.disable('x-powered-by')
-app.use(function (req, res, next) {
-  res.removeHeader('X-Powered-By')
-  next()
-})
-app.use(helmet())
-app.use(helmet.noSniff())
-const sixtyDaysInSeconds = 5184000
-app.use(helmet.hsts({
-  maxAge: sixtyDaysInSeconds
-}))
-app.use(helmet.hidePoweredBy())
-app.use(xssFilter({ setOnOldIE: true }))
-app.use(helmet.frameguard({ action: 'sameorigin' }))
+
 
 const MongoSessionStore = mongoDBStore(session)
 const store = new MongoSessionStore({
@@ -159,7 +145,7 @@ app.get(FB_LOGIN_PATH, passport.authenticate('facebook', { scope: ['email'] }))
 app.get(
   FB_LOGIN_CB_PATH,
   passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
-  (req, res, done) => {
+  (req, res) => {
     // Successful authentication, redirect home.
     return res.redirect(FB_SUCCESS_URL)
   }
@@ -206,6 +192,22 @@ app.get('/api/reset_password_start/:token', async (req, res) => {
 app.get('*', (req, res) => {
   return res.redirect(CLIENT_ADDR)
 })
+
+app.use(cookieParser(SESSION_NAME))
+app.disable('x-powered-by')
+app.use(function (req, res, next) {
+  res.removeHeader('X-Powered-By')
+  next()
+})
+app.use(helmet())
+app.use(helmet.noSniff())
+const sixtyDaysInSeconds = 5184000
+app.use(helmet.hsts({
+  maxAge: sixtyDaysInSeconds
+}))
+app.use(helmet.hidePoweredBy())
+app.use(xssFilter({ setOnOldIE: true }))
+app.use(helmet.frameguard({ action: 'sameorigin' }))
 
 app.listen({ port: APP_PORT }, async () => {
   await db()

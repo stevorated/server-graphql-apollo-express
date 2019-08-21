@@ -146,7 +146,6 @@ app.use(passport.initialize())
 
 passport.serializeUser(async (user, done) => {
   const { _id, fname, lname, email, token } = user
-  console.log(user)
   done(null, {
     // id,
     userId: _id,

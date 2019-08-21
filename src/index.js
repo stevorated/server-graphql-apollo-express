@@ -45,23 +45,23 @@ const publicAssetsDir = path.join(__dirname, '..', PUBLIC_ASSETS_DIR)
 
 const app = express()
 
-app.use(cookieParser(SESSION_NAME))
-app.disable('x-powered-by')
-app.use(function(req, res, next) {
-  res.removeHeader('X-Powered-By')
-  next()
-})
-app.use(helmet())
-app.use(helmet.noSniff())
-const sixtyDaysInSeconds = 5184000
-app.use(
-  helmet.hsts({
-    maxAge: sixtyDaysInSeconds
-  })
-)
-app.use(helmet.hidePoweredBy())
-app.use(xssFilter({ setOnOldIE: true }))
-app.use(helmet.frameguard({ action: 'sameorigin' }))
+// app.use(cookieParser(SESSION_NAME))
+// app.disable('x-powered-by')
+// app.use(function(req, res, next) {
+//   res.removeHeader('X-Powered-By')
+//   next()
+// })
+// app.use(helmet())
+// app.use(helmet.noSniff())
+// const sixtyDaysInSeconds = 5184000
+// app.use(
+//   helmet.hsts({
+//     maxAge: sixtyDaysInSeconds
+//   })
+// )
+// app.use(helmet.hidePoweredBy())
+// app.use(xssFilter({ setOnOldIE: true }))
+// app.use(helmet.frameguard({ action: 'sameorigin' }))
 
 const MongoSessionStore = mongoDBStore(session)
 const store = new MongoSessionStore({

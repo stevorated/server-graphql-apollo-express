@@ -51,6 +51,13 @@ app.use(function (req, res, next) {
   res.removeHeader('X-Powered-By')
   next()
 })
+app.use(helmet())
+app.use(helmet.noSniff())
+const sixtyDaysInSeconds = 5184000
+app.use(helmet.hsts({
+  maxAge: sixtyDaysInSeconds
+}))
+app.use(helmet.hidePoweredBy())
 app.use(xssFilter({ setOnOldIE: true }))
 app.use(helmet.frameguard({ action: 'sameorigin' }))
 
@@ -118,13 +125,7 @@ server.applyMiddleware({
   cors: corsOptions
 })
 
-app.use(helmet())
-app.use(helmet.noSniff())
-const sixtyDaysInSeconds = 5184000
-app.use(helmet.hsts({
-  maxAge: sixtyDaysInSeconds
-}))
-app.use(helmet.hidePoweredBy())
+
 // ================================================ FB LOGIN ==============================
 
 passport.use(

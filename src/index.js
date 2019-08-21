@@ -52,6 +52,7 @@ app.use(function (req, res, next) {
   next()
 })
 app.use(xssFilter({ setOnOldIE: true }))
+app.use(helmet.frameguard({ action: 'sameorigin' }))
 
 const MongoSessionStore = mongoDBStore(session)
 const store = new MongoSessionStore({
@@ -118,7 +119,12 @@ server.applyMiddleware({
 })
 
 app.use(helmet())
-
+app.use(helmet.noSniff())
+const sixtyDaysInSeconds = 5184000
+app.use(helmet.hsts({
+  maxAge: sixtyDaysInSeconds
+}))
+app.use(helmet.hidePoweredBy())
 // ================================================ FB LOGIN ==============================
 
 passport.use(

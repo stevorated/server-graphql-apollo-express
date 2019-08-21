@@ -125,7 +125,6 @@ server.applyMiddleware({
   cors: corsOptions
 })
 
-
 // ================================================ FB LOGIN ==============================
 
 passport.use(
@@ -162,7 +161,7 @@ app.get(
   passport.authenticate('facebook', { failureRedirect: FB_LOGIN_FAIL_PATH }),
   async function(req, res, done) {
     // Successful authentication, redirect home.
-    return res.redirect(302, FB_SUCCESS_URL)
+    return res.redirect(FB_SUCCESS_URL)
   }
 )
 

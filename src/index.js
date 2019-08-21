@@ -144,19 +144,20 @@ passport.use(
 
 app.use(passport.initialize())
 
-app.get(FB_LOGIN_PATH, passport.authenticate('facebook', { scope: ['email'] }), () => {
-  passport.serializeUser(async (user, done) => {
-    const { _id, fname, lname, email, token } = user
-    done(null, {
-      // id,
-      userId: _id,
-      fname,
-      lname,
-      email,
-      token
-    })
+passport.serializeUser(async (user, done) => {
+  const { _id, fname, lname, email, token } = user
+  console.log('serialize')
+  done(null, {
+    // id,
+    userId: _id,
+    fname,
+    lname,
+    email,
+    token
   })
 })
+
+app.get(FB_LOGIN_PATH, passport.authenticate('facebook', { scope: ['email'] }))
 
 app.get(
   FB_LOGIN_CB_PATH,

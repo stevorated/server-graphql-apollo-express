@@ -45,23 +45,23 @@ const publicAssetsDir = path.join(__dirname, '..', PUBLIC_ASSETS_DIR)
 
 const app = express()
 
-// app.use(cookieParser(SESSION_NAME))
-// app.disable('x-powered-by')
-// app.use(function(req, res, next) {
-//   res.removeHeader('X-Powered-By')
-//   next()
-// })
-// app.use(helmet())
-// app.use(helmet.noSniff())
-// const sixtyDaysInSeconds = 5184000
-// app.use(
-//   helmet.hsts({
-//     maxAge: sixtyDaysInSeconds
-//   })
-// )
-// app.use(helmet.hidePoweredBy())
-// app.use(xssFilter({ setOnOldIE: true }))
-// app.use(helmet.frameguard({ action: 'sameorigin' }))
+app.use(cookieParser(SESSION_NAME))
+app.disable('x-powered-by')
+app.use(function(req, res, next) {
+  res.removeHeader('X-Powered-By')
+  next()
+})
+app.use(helmet())
+app.use(helmet.noSniff())
+const sixtyDaysInSeconds = 5184000
+app.use(
+  helmet.hsts({
+    maxAge: sixtyDaysInSeconds
+  })
+)
+app.use(helmet.hidePoweredBy())
+app.use(xssFilter({ setOnOldIE: true }))
+app.use(helmet.frameguard({ action: 'sameorigin' }))
 
 const MongoSessionStore = mongoDBStore(session)
 const store = new MongoSessionStore({
@@ -102,10 +102,10 @@ const server = new ApolloServer({
   playground: IN_PROD
     ? false
     : {
-        settings: {
-          'request.credentials': 'same-origin'
-        }
-      },
+      settings: {
+        'request.credentials': 'same-origin'
+      }
+    },
   uploads: {
     maxFieldSize: 10000000,
     maxFileSize: 10000000,
@@ -144,19 +144,19 @@ passport.use(
 
 app.use(passport.initialize())
 
-passport.serializeUser(async (user, done) => {
-  const { _id, fname, lname, email, token } = user
-  done(null, {
-    // id,
-    userId: _id,
-    fname,
-    lname,
-    email,
-    token
+app.get(FB_LOGIN_PATH, passport.authenticate('facebook', { scope: ['email'] }), () => {
+  passport.serializeUser(async (user, done) => {
+    const { _id, fname, lname, email, token } = user
+    done(null, {
+      // id,
+      userId: _id,
+      fname,
+      lname,
+      email,
+      token
+    })
   })
 })
-
-app.get(FB_LOGIN_PATH, passport.authenticate('facebook', { scope: ['email'] }))
 
 app.get(
   FB_LOGIN_CB_PATH,

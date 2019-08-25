@@ -14,7 +14,6 @@ import passport from 'passport'
 import FacebookStrategy from 'passport-facebook'
 import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
-import xssFilter from 'x-xss-protection'
 import { User } from './models'
 const {
   NODE_ENV,
@@ -47,7 +46,7 @@ const app = express()
 
 app.use(cookieParser(SESSION_NAME))
 app.disable('x-powered-by')
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.removeHeader('X-Powered-By')
   next()
 })
@@ -60,7 +59,7 @@ app.use(
   })
 )
 app.use(helmet.hidePoweredBy())
-app.use(xssFilter({ setOnOldIE: true }))
+app.use(helmet.xssFilter({ setOnOldIE: true }))
 app.use(helmet.frameguard({ action: 'sameorigin' }))
 
 const MongoSessionStore = mongoDBStore(session)
@@ -69,7 +68,7 @@ const store = new MongoSessionStore({
   collection: SESSION_DB_COLLECTION,
   clearInterval: 60
 })
-store.on('error', function(error) {
+store.on('error', function (error) {
   console.log(error)
 })
 app.set('trust proxy', 1)
@@ -209,9 +208,3 @@ app.listen({ port: APP_PORT }, async () => {
   await db()
   console.log(`🚀 Server ready at ${MY_PUBLIC_DOMAIN}${server.graphqlPath}`)
 })
-
-// ,
-//   (req, res) => {
-//     // Successful authentication, redirect home.
-//     // return res.redirect(FB_SUCCESS_URL)
-//   }
